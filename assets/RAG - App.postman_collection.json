@@ -1,0 +1,49 @@
+{
+	"info": {
+		"_postman_id": "9efb07cb-197d-4412-9e18-1f011d96dfbc",
+		"name": "RAG - App",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "45893841",
+		"_collection_link": "https://eslamelhosuniy.postman.co/workspace/Eslam-Elhosuniy's-Workspace~c1482d84-6920-47e1-8605-97c7775fe918/collection/45893841-9efb07cb-197d-4412-9e18-1f011d96dfbc?action=share&source=collection_link&creator=45893841"
+	},
+	"item": [
+		{
+			"name": "welcome",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "{{URL}}/welcome"
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "URL",
+			"value": "http://127.0.0.1:8000/",
+			"type": "string"
+		}
+	]
+}
