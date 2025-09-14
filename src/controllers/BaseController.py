@@ -1,4 +1,5 @@
 from helpers.config import get_settings, Settings
 
 class BaseController():
-    self.get_settings = get_settings()
+    def __init__(self):
+        self.app_settings = get_settings()
