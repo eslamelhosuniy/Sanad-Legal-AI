@@ -1,7 +1,7 @@
 from fastapi import FastAPI,APIRouter,Depends,UploadFile,status
 from fastapi.responses import JSONResponse
 from helpers.config import get_settings, Settings
-from controllers import DataController
+from controllers import DataController,ProjectController
 from models import ResponseSignal
 
 import os
@@ -24,7 +24,8 @@ async def upload_data(project_id:str , file:UploadFile,app_settings: Settings = 
                 }
                 )
         else:
-                 return JSONResponse (
+                project_dir_path = ProjectController().get_project_path(project_id=project_id)
+                return JSONResponse (
                          
                         status_code = status.HTTP_200_OK,
                         content = {
