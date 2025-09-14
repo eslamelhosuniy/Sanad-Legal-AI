@@ -1,3 +1,4 @@
+from asyncio.log import logger
 from fastapi import FastAPI,APIRouter,Depends,UploadFile,status
 from fastapi.responses import JSONResponse
 from helpers.config import get_settings, Settings
@@ -24,14 +25,21 @@ async def upload_data(project_id:str , file:UploadFile,app_settings: Settings = 
                 }
                 )
         else:
-                project_dir_path = ProjectController().get_project_path(project_id=project_id)
-                return JSONResponse (
+                 try:
+                         async with aiofiles.open(file_path, "wb") as f:
+                          while chunk := await file.read(app_settings.FILE_DEFAULT_CHUNK_SIZE):
+                                  await f.write(chunk)
+                 except Exception as e:
+                         logger.error(f"Error while uploading file: {e}")
                          
-                        status_code = status.HTTP_200_OK,
-                        content = {
-                                "status":status.HTTP_200_OK,
-                                "msg" : msg
-                        }
-                 )
-                
+                 project_dir_path = ProjectController().get_project_path(project_id=project_id)
+                 return JSONResponse (
+                                
+                                status_code = status.HTTP_200_OK,
+                                content = {
+                                        "status":status.HTTP_200_OK,
+                                        "msg" : msg
+                                }
+                        )
+                        
 
