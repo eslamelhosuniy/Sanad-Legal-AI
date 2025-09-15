@@ -1,6 +1,7 @@
 import logging
 from fastapi import FastAPI,APIRouter,Depends,UploadFile,status
 from fastapi.responses import JSONResponse
+import aiofiles
 from helpers.config import get_settings, Settings
 from controllers import DataController,ProjectController
 from models import ResponseSignal
@@ -21,7 +22,7 @@ async def upload_data(project_id:str , file:UploadFile,app_settings: Settings = 
                         status_code = status.HTTP_400_BAD_REQUEST,
                         content = {
                                 "status":status.HTTP_400_BAD_REQUEST,
-                                "msg" : msg
+                                "content" :{ "msg":msg}
                         
                 }
                 )
@@ -37,7 +38,7 @@ async def upload_data(project_id:str , file:UploadFile,app_settings: Settings = 
                         status_code = status.HTTP_400_BAD_REQUEST,
                         content = {
                                 "status":status.HTTP_400_BAD_REQUEST,
-                                "msg" : ResponseSignal.FILE_UPLOAD_FAILED
+                                "content" : {"msg":ResponseSignal.FILE_UPLOAD_FAILED}
                         
                 }
                 )
@@ -49,7 +50,7 @@ async def upload_data(project_id:str , file:UploadFile,app_settings: Settings = 
                                 status_code = status.HTTP_200_OK,
                                 content = {
                                         "status":status.HTTP_200_OK,
-                                        "msg" : msg
+                                        "content" :{ "msg":msg,"file_id":file_id}
                                 }
                         )
         
