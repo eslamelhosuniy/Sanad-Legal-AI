@@ -3,9 +3,9 @@ from fastapi import FastAPI,APIRouter,Depends,UploadFile,status
 from fastapi.responses import JSONResponse
 import aiofiles
 from helpers.config import get_settings, Settings
-from controllers import DataController,ProjectController
+from controllers import DataController,ProjectController,ProcessController
 from models import ResponseSignal
-
+from .schemes.data import ProcessRequest
 import os
 
 data_router = APIRouter(prefix="/api/v1/data",tags = ["api v1/data"])
@@ -38,7 +38,7 @@ async def upload_data(project_id:str , file:UploadFile,app_settings: Settings = 
                         status_code = status.HTTP_400_BAD_REQUEST,
                         content = {
                                 "status":status.HTTP_400_BAD_REQUEST,
-                                "content" : {"msg":ResponseSignal.FILE_UPLOAD_FAILED}
+                                "content" : {"msg":ResponseSignal.FILE_UPLOAD_FAILED.value}
                         
                 }
                 )
@@ -55,6 +55,42 @@ async def upload_data(project_id:str , file:UploadFile,app_settings: Settings = 
                         )
         
 
-
+@data_router.get("/process/{project_id}")
+async def process_endpoint(project_id:str,process_request: ProcessRequest):
+        file_id = process_request.file_id
+        chunk_size = process_request.Chunk_size
+        overlap_size = process_request.Overlap_size
+        Process_controller = ProcessController(project_id=project_id)
+        file_content = Process_controller.get_file_content(file_id=file_id)
+        file_chunks = Process_controller.process_file_content(
+                file_content=file_content,
+                file_id=file_id,
+                chunk_size=chunk_size,
+                overlap_size=overlap_size
+        )
+        
+        if file_chunks is None or len(file_chunks) == 0:
+                return JSONResponse(
+                        status_code = status.HTTP_400_BAD_REQUEST,
+                        content={
+                                "status":status.HTTP_400_BAD_REQUEST,
+                                "content" :{ "msg":ResponseSignal.PROCESSING_FAILED.value,"file_id":file_id}
+                        }
+                )
+        file_chunks_records = [
+            {
+                "chunk_text":chunk.page_content,
+                "chunk_metadata":chunk.metadata,
+                
+            }
+            for i, chunk in enumerate(file_chunks)
+        ]
+        return JSONResponse(
+                        status_code = status.HTTP_200_OK,
+                        content={
+                                "status":status.HTTP_200_OK,
+                                "content" :{ "msg":ResponseSignal.PROCESSING_SUCCESS.value,"file_id":file_id,"file_chunks":file_chunks_records}
+                        }
+                )
                         
 
