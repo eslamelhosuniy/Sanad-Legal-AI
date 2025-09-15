@@ -14,7 +14,7 @@ logger = logging.getLogger('uvicorn.error')
 async def upload_data(project_id:str , file:UploadFile,app_settings: Settings = Depends(get_settings)):
         data_ontroller = DataController()
         is_valid,msg = data_ontroller.validate_uploaded_file(file=file)
-        file_path = data_ontroller.generate_unique_filename(orig_file_name=file.filename,project_id=project_id)
+        file_path,file_id = data_ontroller.generate_unique_filename(orig_file_name=file.filename,project_id=project_id)
         if not is_valid:
                 return JSONResponse (
                 
