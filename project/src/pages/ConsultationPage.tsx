@@ -1,0 +1,57 @@
+import Sidebar from "../components/Layout/Sidebar";
+import MainNavbar from "../components/Layout/Navbar";
+import ChatHeader from "../components/chat/ChatHeader";
+import MessagesList from "../components/chat/MessageList";
+import QuickReplies from "../components/chat/QuickReplies";
+import ChatInput from "../components/chat/ChatInput";
+import { useChat } from "../hooks/useChat";
+import { useEffect } from "react";
+
+export default function ConsultationPage() {
+  const { messages, inputMessage, setInputMessage, isLoading, sendMessage } = useChat();
+
+useEffect(() => {
+  function handleKeyDown(e: KeyboardEvent) {
+    if (e.code === "Enter") {
+      e.preventDefault();
+      sendMessage();
+    }
+  }
+function newLine(e : KeyboardEvent){
+    if (e.code === "Enter" && e.shiftKey) {
+    e.preventDefault();
+    setInputMessage(inputMessage + "\n");
+  }
+}
+  
+  document.addEventListener("keydown", handleKeyDown);
+  document.addEventListener("keydown", newLine);
+
+  
+  return () => {
+    document.removeEventListener("keydown", handleKeyDown);
+    document.removeEventListener("keydown", newLine);
+  };
+}, [sendMessage, inputMessage, setInputMessage]);
+
+
+  return (
+    <div className="min-h-screen bg-gray-50 dark:bg-neutral-darker">
+      <MainNavbar />
+      <div className="flex h-[calc(100vh-80px)]">
+        <Sidebar />
+        <main className="flex-1 flex flex-col">
+          <ChatHeader />
+          <MessagesList messages={messages} isLoading={isLoading} />
+          {messages.length === 1 && <QuickReplies onSelect={setInputMessage} />}
+          <ChatInput
+            value={inputMessage}
+            onChange={setInputMessage}
+            onSend={sendMessage}
+            isLoading={isLoading}
+          />
+        </main>
+      </div>
+    </div>
+  );
+}
