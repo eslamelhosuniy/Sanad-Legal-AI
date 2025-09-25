@@ -34,12 +34,24 @@ export default function VerifyEmail() {
                     }
                 );
 
-                const data = await response.text();
+                let data: any;
+                try {
+                    data = await response.json();
+                } catch {
+                    data = await response.text();
+                }
+
+                console.log("VERIFY EMAIL response:", data);
+
                 if (response.ok) {
-                    setMessage(data || "Email verified successfully!");
+                    setMessage(
+                        data?.message || data || "Email verified successfully!"
+                    );
                     setSuccess(true);
                 } else {
-                    setMessage(data || "Verification failed.");
+                    setMessage(
+                        data?.message || data || "Verification failed. Please try again."
+                    );
                     setSuccess(false);
                 }
             } catch (err) {
@@ -73,8 +85,7 @@ export default function VerifyEmail() {
             {/* Main Content */}
             <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
                 <div className="w-full max-w-md bg-white shadow-lg rounded-2xl p-6 text-center">
-                    <h3 className="text-2xl font-bold text-blue-600 mb-2"></h3>
-                    <h5 className="text-lg font-medium mb-4">Email Verification</h5>
+                    <h3 className="text-2xl font-bold text-blue-600 mb-2">Email Verification</h3>
 
                     {loading ? (
                         <div className="flex justify-center items-center py-6">
