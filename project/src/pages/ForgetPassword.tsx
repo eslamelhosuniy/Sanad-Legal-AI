@@ -18,7 +18,7 @@ export default function ForgetPassword() {
 
         try {
             const res = await fetch(
-                "https://sanad-backend-production-cbbc.up.railway.app/api/Auth/forgot-password",
+                "https://sanad-backend-production-cbbc.up.railway.app/api/Auth/forget-password",
                 {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
@@ -27,15 +27,19 @@ export default function ForgetPassword() {
             );
 
             const data = await res.json().catch(() => ({}));
+
             if (!res.ok) {
                 const message =
-                    data?.errors?.Email?.[0] || data?.message || "Request failed";
+                    data?.errors?.Email?.[0] ||
+                    data?.error ||
+                    data?.message ||
+                    "فشل الطلب، حاول مرة أخرى";
                 throw new Error(message);
             }
 
             setSuccess("تم إرسال رابط إعادة تعيين كلمة المرور إلى بريدك الإلكتروني.");
         } catch (err: any) {
-            setError(err.message || "Something went wrong");
+            setError(err.message || "حدث خطأ ما");
         } finally {
             setLoading(false);
         }
@@ -102,7 +106,7 @@ export default function ForgetPassword() {
                             {loading ? (
                                 <>
                                     <Loader2 className="w-4 h-4 animate-spin mr-2" />
-                                    Sending...
+                                    جاري الإرسال...
                                 </>
                             ) : (
                                 "إرسال الرابط"
