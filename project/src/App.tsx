@@ -1,6 +1,6 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { ThemeProvider } from './contexts/ThemeContext';
+// import { ThemeProvider } from './contexts/ThemeContext';
 import LandingPage from './pages/LandingPage';
 import MainDashboard from './pages/MainDashboard';
 import ConsultationPage from './pages/ConsultationPage';
@@ -17,12 +17,13 @@ import ResetPassword from './pages/ResetPassword';
 import VerifyEmail from './pages/VerifyEmail';
 import WaitingVerifyEmail from './pages/WaitingVerifyEmail';
 import ForgetPassword from './pages/ForgetPassword';
+import ConsultationHistory from './pages/ConsultationHistory';
 
 function App() {
   return (
     <React.StrictMode>
       <BrowserRouter>
-        <ThemeProvider>
+        {/* <ThemeProvider> */}
           <AuthProvider>
             <div className="min-h-screen bg-white dark:bg-neutral-darker transition-colors duration-300">
               <Routes>
@@ -63,6 +64,11 @@ function App() {
                     <LawyersDashboard />
                   </ProtectedRoute>}
                 />
+                <Route path="/consultation-history" element={
+                  <ProtectedRoute>
+                    <ConsultationHistory />
+                  </ProtectedRoute>}
+                />
                 <Route path="/privacy" element={
                   <ProtectedRoute>
                     <PrivacyPage />
@@ -76,7 +82,7 @@ function App() {
               </Routes>
             </div>
           </AuthProvider>
-        </ThemeProvider>
+        {/* </ThemeProvider> */}
       </BrowserRouter>
     </React.StrictMode>
   );

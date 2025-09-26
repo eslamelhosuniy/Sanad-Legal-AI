@@ -1,11 +1,12 @@
 import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
-
+const savedLang = localStorage.getItem("lang")
 i18n.use(initReactI18next).init({
   resources: {
     ar: {
       translation: {
         brand: "سَنَد",
+        soon: "قريباً",
         nav: {
           home: "الرئيسية",
           consultation: "استشارة سريعة",
@@ -109,6 +110,7 @@ i18n.use(initReactI18next).init({
         landingPage: {
           appName: "الوكيل القانوني الذكي",
           login: "تسجيل الدخول",
+          logout:"تسجيل خروج",
           hero: {
             title:
               "الوصول السريع والدقيق للمعلومات القانوني في مصر",
@@ -164,6 +166,7 @@ i18n.use(initReactI18next).init({
     en: {
       translation: {
         brand: "Sanad",
+        soon: "Soon",
         nav: {
           home: "Home",
           consultation: "Quick Consultation",
@@ -269,6 +272,7 @@ i18n.use(initReactI18next).init({
         landingPage: {
           appName: "Smart Legal Agent",
           login: "Login",
+          logout:"Logout",
           hero: {
             title:
               "Fast and Accurate Access to Legal Information in Egypt",
@@ -323,7 +327,7 @@ i18n.use(initReactI18next).init({
       },
     },
   },
-  lng: "en", // اللغة الافتراضية
+  lng: savedLang, // اللغة الافتراضية
   fallbackLng: "ar",
   interpolation: {
     escapeValue: false,

@@ -6,9 +6,12 @@ import { useTranslation } from 'react-i18next';
 import Navbar from '../components/Layout/Navbar';
 import Sidebar from '../components/Layout/Sidebar';
 import Button from '../components/UI/Button';
+import { useAuth } from '../contexts/AuthContext';
 
 const MainDashboard: React.FC = () => {
   const { t } = useTranslation();
+  const { user } = useAuth();
+
 
   const quickActions = [
     {
@@ -81,7 +84,7 @@ const MainDashboard: React.FC = () => {
             {/* Welcome Section */}
             <div className="mb-8">
               <h1 className="text-3xl font-semibold text-neutral-dark dark:text-white mb-2">
-                {t("welcome", { name: "أحمد محمد" })}
+                {t("welcome", { name: user?.name })}
               </h1>
               <p className="text-neutral-medium dark:text-neutral-light">
                 {t("subtitle")}

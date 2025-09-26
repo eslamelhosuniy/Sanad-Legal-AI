@@ -1,4 +1,6 @@
 import { Navbar, Nav, Container } from "react-bootstrap";
+import { useAuth } from "../../contexts/AuthContext";
+import React, { useState } from "react";
 import {
   Search,
   Home,
@@ -10,11 +12,17 @@ import {
 import { Link, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import ChangeLanguageButton from "../UI/ChangeLanguageButton";
+import PopUp from "../UI/PopUp";
 
 function MainNavbar() {
   const { t } = useTranslation();
   const location = useLocation();
+  const { user, logout } = useAuth();
+  const [pop, setPop] = useState(false);
 
+  function togglePop() {
+    setPop(!pop);
+  }
 
   const navItems = [
     { path: "/dashboard", icon: Home, label: t("nav.home") },
@@ -23,15 +31,20 @@ function MainNavbar() {
       icon: MessageCircle,
       label: t("nav.consultation"),
     },
-    { path: "/documents", icon: FileText, label: t("nav.documents") },
-    { path: "/research", icon: Search, label: t("nav.research") },
-    { path: "/lawyers", icon: Users, label: t("nav.lawyers") },
+    {
+      path: "/documents",
+      icon: FileText,
+      label: t("nav.documents"),
+      soon: true,
+    },
+    { path: "/research", icon: Search, label: t("nav.research"), soon: true },
+    { path: "/lawyers", icon: Users, label: t("nav.lawyers"), soon: true },
     { path: "/profile", icon: User, label: t("nav.profile") },
   ];
 
   return (
     <Navbar expand="xl" className="bg-body-tertiary">
-      <Container>
+      <Container fluid>
         <Navbar.Brand className="text-4xl">
           <Link to="/">{t("brand")}</Link>
         </Navbar.Brand>
@@ -44,8 +57,9 @@ function MainNavbar() {
               return (
                 <Link
                   key={item.path}
-                  to={item.path}
-                  className={`flex items-center  space-x-2 space-x-reverse px-2 py-2 rounded-lg transition-colors ${
+                  to={ item.soon ? "#" : item.path}
+                  onClick={item.soon ? togglePop : null}
+                  className={`flex items-center mx-2 px-2 py-2 rounded-lg transition-colors ${
                     isActive
                       ? "bg-accent-purple text-white"
                       : "text-neutral-dark dark:text-white hover:bg-secondary-lavender dark:hover:bg-neutral-dark"
@@ -59,10 +73,22 @@ function MainNavbar() {
           </Nav>
 
           {/* زر تغيير اللغة */}
-         <ChangeLanguageButton/>
-
+          {user && (
+            <Link
+              onClick={logout}
+              className="text-accent-purple mx-3 hover:text-purple-600 font-medium transition-colors"
+            >
+              {t("landingPage.logout")}
+            </Link>
+          )}
+          <ChangeLanguageButton />
         </Navbar.Collapse>
       </Container>
+      {pop && (
+        <PopUp onClose={togglePop}>
+          <p>{t("soon")}</p>
+        </PopUp>
+      )}
     </Navbar>
   );
 }

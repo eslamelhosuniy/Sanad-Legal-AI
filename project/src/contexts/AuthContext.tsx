@@ -1,10 +1,18 @@
-import { createContext, useContext, useState, ReactNode, useEffect } from "react";
+import {
+  createContext,
+  useContext,
+  useState,
+  ReactNode,
+  useEffect,
+} from "react";
 import { useNavigate } from "react-router-dom";
 
 type User = {
   id: string;
   name: string;
   email: string;
+  role: string;
+  conversations: object[];
 } | null;
 
 type AuthContextType = {
@@ -16,7 +24,8 @@ type AuthContextType = {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-const API_BASE = "https://sanad-backend-production-cbbc.up.railway.app/api/Auth";
+const API_BASE =
+  "https://sanad-backend-production-cbbc.up.railway.app/api/Auth";
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User>(null);
@@ -34,6 +43,21 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       }
     }
   }, []);
+  useEffect(() => {
+    const stored = localStorage.getItem("user");
+    if (stored) {
+      try {
+        const parsed = JSON.parse(stored);
+        setUser(parsed);
+
+        // ✅ لو اليوزر موجود يروح علطول للداشبورد
+        navigate("/dashboard");
+      } catch (err) {
+        console.error("Failed to parse stored user", err);
+        localStorage.removeItem("user");
+      }
+    }
+  }, [user, navigate]);
 
   const register = async (name: string, email: string, password: string) => {
     const res = await fetch(`${API_BASE}/register`, {
@@ -84,16 +108,18 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       id: data.id,
       name: data.name,
       email: data.email,
+      role: data.role,
+      conversations: data.conversations,
     };
     setUser(userObj);
     localStorage.setItem("user", JSON.stringify(userObj));
-    navigate("/dashboard");
+    navigate("/dashboard", { replace: true });
   };
 
   const logout = () => {
     setUser(null);
     localStorage.removeItem("user");
-    navigate("/");
+    navigate("/", { replace: true });
   };
 
   return (
@@ -106,5 +132,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 export const useAuth = () => {
   const ctx = useContext(AuthContext);
   if (!ctx) throw new Error("useAuth must be used within AuthProvider");
+  console.log(ctx);
   return ctx;
 };
