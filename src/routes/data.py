@@ -1,18 +1,22 @@
 import logging
-from fastapi import FastAPI,APIRouter,Depends,UploadFile,status
+from fastapi import FastAPI,APIRouter,Depends,UploadFile,status,Request
 from fastapi.responses import JSONResponse
 import aiofiles
 from helpers.config import get_settings, Settings
 from controllers import DataController,ProjectController,ProcessController
-from models import ResponseSignal
-from .schemes.data import ProcessRequest
+from models import ResponseSignal,ProjectModel
+from .schemes.data import ProcessRequest 
 import os
+
 
 data_router = APIRouter(prefix="/api/v1/data",tags = ["api v1/data"])
 logger = logging.getLogger('uvicorn.error')
 
 @data_router.post("/upload/{project_id}")
-async def upload_data(project_id:str , file:UploadFile,app_settings: Settings = Depends(get_settings)):
+async def upload_data(request: Request,project_id:str , file:UploadFile,app_settings: Settings = Depends(get_settings)):
+        project_model = ProjectModel(db_client = request.app.db_client)
+        project = await project_model.get_project_or_create_one(project_id = project_id)
+        
         data_ontroller = DataController()
         is_valid,msg = data_ontroller.validate_uploaded_file(file=file)
         file_path,file_id = data_ontroller.generate_unique_filename(orig_file_name=file.filename,project_id=project_id)
@@ -44,13 +48,17 @@ async def upload_data(project_id:str , file:UploadFile,app_settings: Settings = 
                 )
 
                          
-                 project_dir_path = ProjectController().get_project_path(project_id=project_id)
+                 project_dir_path =  ProjectController().get_project_path(project_id=project_id)
+                 print("DEBUG project:", type(project), project)
+
                  return JSONResponse (
                                 
                                 status_code = status.HTTP_200_OK,
                                 content = {
                                         "status":status.HTTP_200_OK,
-                                        "content" :{ "msg":msg,"file_id":file_id}
+                                        "content" :{ "msg":msg,
+                                                    "file_id":file_id,
+                                                    "project_id":str(project._id)}
                                 }
                         )
         

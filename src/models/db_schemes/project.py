@@ -1,10 +1,10 @@
-from pydantic import BaseModel,Filed, validator
-from typing import optional
-from bosn.objectid import ObjectId
+from pydantic import BaseModel, Field, validator
+from typing import Optional
+from bson.objectid import ObjectId
 
 class Project(BaseModel):
-    _id:optional[ObjectId]
-    project_id: str = Filed(..., min_length = 1)
+    _id:Optional[ObjectId]
+    project_id: str = Field(..., min_length = 1)
 
     @validator("project_id")
     def validate_project_id(cls,value):
@@ -14,4 +14,4 @@ class Project(BaseModel):
         return value
 
     class Config():
-        arbitray_types_allowd = True     
+        arbitrary_types_allowed = True     
