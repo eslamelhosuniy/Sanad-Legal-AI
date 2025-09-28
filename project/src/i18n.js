@@ -370,6 +370,61 @@ i18n.use(initReactI18next).init({
           title: "تاريخ الاستشارات السابقة",
           delete: "حذف",
         },
+        register: {
+          title: "إنشاء حسابك",
+          subtitle:
+            "انضم لآلاف المستخدمين الذين يتحدثون مع الذكاء الاصطناعي يومياً",
+          form: {
+            namePlaceholder: "أدخل اسمك",
+            emailPlaceholder: "أدخل بريدك الإلكتروني",
+            passwordPlaceholder: "إنشاء كلمة مرور",
+            confirmPasswordPlaceholder: "تأكيد كلمة المرور",
+            passwordNote: "يجب أن تكون أكثر من 6 أحرف",
+          },
+          errors: {
+            passwordMismatch: "كلمات المرور غير متطابقة",
+            registerFailed: "فشل التسجيل",
+          },
+          buttons: {
+            signUp: "إنشاء حساب",
+            connecting: "جارٍ الاتصال...",
+          },
+          alreadyHaveAccount: "هل لديك حساب بالفعل؟",
+          login: "تسجيل الدخول",
+        },
+        login: {
+          title: "مرحبًا بعودتك",
+          subtitle: "قم بتسجيل الدخول لمواصلة الدردشة مع الذكاء الاصطناعي",
+          form: {
+            emailPlaceholder: "أدخل بريدك الإلكتروني",
+            passwordPlaceholder: "كلمة المرور",
+          },
+          forgotPassword: "نسيت كلمة المرور؟",
+          buttons: {
+            login: "تسجيل الدخول",
+            connecting: "جارٍ الاتصال...",
+          },
+          noAccount: "ليس لديك حساب؟",
+          register: "اشتراك",
+          errors: {
+            loginFailed: "فشل تسجيل الدخول",
+          },
+        },
+        verifyEmail: {
+          title: "تأكيد البريد الإلكتروني",
+          invalidLink: "رابط التحقق غير صالح.",
+          success: "تم التحقق من البريد الإلكتروني بنجاح!",
+          failed: "فشل التحقق. يرجى المحاولة مرة أخرى.",
+          error: "حدث خطأ. يرجى المحاولة لاحقاً.",
+          goToLogin: "اذهب إلى تسجيل الدخول",
+        },
+        waitingVerifyEmail: {
+          title: "تحقق من بريدك الإلكتروني",
+          subtitle: "لقد اقتربنا من النهاية!",
+          description:
+            "لقد أرسلنا رابط التحقق إلى بريدك الإلكتروني. يرجى التحقق من صندوق الوارد والنقر على الرابط لتفعيل حسابك.",
+          goToLogin: "اذهب إلى تسجيل الدخول",
+        },
       },
     },
     en: {
@@ -745,6 +800,60 @@ i18n.use(initReactI18next).init({
         consultationHistory: {
           title: "Convesations History",
           delete: "Delete",
+        },
+        register: {
+          title: "Create Your Account",
+          subtitle: "Join thousands who chat with AI daily",
+          form: {
+            namePlaceholder: "Enter your name",
+            emailPlaceholder: "Enter your email",
+            passwordPlaceholder: "Create password",
+            confirmPasswordPlaceholder: "Confirm password",
+            passwordNote: "Must be 6+ characters",
+          },
+          errors: {
+            passwordMismatch: "Passwords do not match",
+            registerFailed: "Register failed",
+          },
+          buttons: {
+            signUp: "SIGN UP",
+            connecting: "Connecting...",
+          },
+          alreadyHaveAccount: "Already have an account?",
+          login: "Login",
+        },
+        login: {
+          title: "Welcome Back",
+          subtitle: "Log in to continue chatting with AI",
+          form: {
+            emailPlaceholder: "Enter your email",
+            passwordPlaceholder: "Password",
+          },
+          forgotPassword: "Forgot password?",
+          buttons: {
+            login: "LOG IN",
+            connecting: "Connecting...",
+          },
+          noAccount: "Don't have an account?",
+          register: "Sign Up",
+          errors: {
+            loginFailed: "Login failed",
+          },
+        },
+        verifyEmail: {
+          title: "Email Verification",
+          invalidLink: "Invalid verification link.",
+          success: "Email verified successfully!",
+          failed: "Verification failed. Please try again.",
+          error: "An error occurred. Please try again later.",
+          goToLogin: "Go to Login",
+        },
+        waitingVerifyEmail: {
+          title: "Verify Your Email",
+          subtitle: "Almost done!",
+          description:
+            "We’ve sent a verification link to your email. Please check your inbox and click the link to activate your account.",
+          goToLogin: "Go to Login",
         },
       },
     },

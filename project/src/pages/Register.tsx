@@ -3,20 +3,26 @@ import { Loader2, Mail, Lock, User, Scale, Globe } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
 import { Link, useNavigate } from "react-router-dom";
 import ChangeLanguageButton from "../components/UI/ChangeLanguageButton";
-import { t } from "i18next";
+import { useTranslation } from "react-i18next";
 
 export default function Register() {
   const [loading, setLoading] = useState(false);
-  const [form, setForm] = useState({ name: "", email: "", password: "", confirm: "" });
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    password: "",
+    confirm: "",
+  });
   const [error, setError] = useState<string | null>(null);
   const { register } = useAuth();
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (form.password !== form.confirm) {
-      setError("Passwords do not match");
+      setError(t("register.errors.passwordMismatch"));
       return;
     }
 
@@ -26,7 +32,7 @@ export default function Register() {
       await register(form.name, form.email, form.password);
       navigate("/waiting_verify_email");
     } catch (err: any) {
-      setError(err.message || "Register failed");
+      setError(err.message || t("register.errors.registerFailed"));
     } finally {
       setLoading(false);
     }
@@ -49,8 +55,10 @@ export default function Register() {
       <div className="min-h-screen flex items-center justify-center">
         <div className="w-full max-w-sm p-6 bg-white/10 rounded-2xl bg-gradient-to-b from-purple-700 to-gray-900">
           <div className="flex flex-col items-center mb-6">
-            <h1 className="mt-4 text-xl font-semibold text-white">Create Your Account</h1>
-            <p className="text-gray-300 text-sm">Join thousands who chat with AI daily</p>
+            <h1 className="mt-4 text-xl font-semibold text-white">
+              {t("register.title")}
+            </h1>
+            <p className="text-gray-300 text-sm">{t("register.subtitle")}</p>
           </div>
 
           <form className="space-y-3" onSubmit={handleSubmit}>
@@ -64,7 +72,7 @@ export default function Register() {
               <User className="w-5 h-5 text-gray-400" />
               <input
                 type="text"
-                placeholder="Enter your name"
+                placeholder={t("register.form.namePlaceholder")}
                 className="ml-2 flex-1 bg-transparent outline-none text-gray-800"
                 value={form.name}
                 onChange={(e) => {
@@ -79,7 +87,7 @@ export default function Register() {
               <Mail className="w-5 h-5 text-gray-400" />
               <input
                 type="email"
-                placeholder="Enter your email"
+                placeholder={t("register.form.emailPlaceholder")}
                 className="ml-2 flex-1 bg-transparent outline-none text-gray-800"
                 value={form.email}
                 onChange={(e) => {
@@ -94,7 +102,7 @@ export default function Register() {
               <Lock className="w-5 h-5 text-gray-400" />
               <input
                 type="password"
-                placeholder="Create password"
+                placeholder={t("register.form.passwordPlaceholder")}
                 className="ml-2 flex-1 bg-transparent outline-none text-gray-800"
                 value={form.password}
                 onChange={(e) => {
@@ -109,7 +117,7 @@ export default function Register() {
               <Lock className="w-5 h-5 text-gray-400" />
               <input
                 type="password"
-                placeholder="Confirm password"
+                placeholder={t("register.form.confirmPasswordPlaceholder")}
                 className="ml-2 flex-1 bg-transparent outline-none text-gray-800"
                 value={form.confirm}
                 onChange={(e) => {
@@ -120,7 +128,9 @@ export default function Register() {
               />
             </div>
 
-            <p className="text-xs text-gray-400">Must be 6+ characters</p>
+            <p className="text-xs text-gray-400">
+              {t("register.form.passwordNote")}
+            </p>
 
             <button
               type="submit"
@@ -130,18 +140,18 @@ export default function Register() {
               {loading ? (
                 <>
                   <Loader2 className="w-4 h-4 animate-spin mr-2" />
-                  Connecting...
+                  {t("register.buttons.connecting")}
                 </>
               ) : (
-                "SIGN UP"
+                t("register.buttons.signUp")
               )}
             </button>
           </form>
 
           <p className="text-center text-sm text-gray-300 mt-4">
-            هل لديك حساب بالفعل؟{" "}
+            {t("register.alreadyHaveAccount")}{" "}
             <Link to="/login" className="text-purple-400 font-semibold">
-              تسجيل الدخول
+              {t("register.login")}
             </Link>
           </p>
         </div>

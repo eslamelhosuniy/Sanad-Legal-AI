@@ -1,12 +1,10 @@
-import { t } from "i18next";
+import { useTranslation } from "react-i18next";
 import { Scale, Globe, Mail } from "lucide-react";
 import { Link } from "react-router-dom";
 import ChangeLanguageButton from "../components/UI/ChangeLanguageButton";
-import { useAuth } from "../contexts/AuthContext";
 
-export default function Dashboard() {
-  const { logout } = useAuth();
-
+export default function WaitingVerifyEmail() {
+  const { t } = useTranslation();
   return (
     <div>
       {/* Header */}
@@ -18,9 +16,7 @@ export default function Dashboard() {
               {t("brand")}
             </span>
           </div>
-          <div>
-            <ChangeLanguageButton />
-          </div>
+          <ChangeLanguageButton />
         </div>
       </header>
 
@@ -28,23 +24,22 @@ export default function Dashboard() {
       <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
         <div className="w-full max-w-md bg-white shadow-lg rounded-2xl p-6 text-center">
           <Mail className="w-12 h-12 text-blue-600 mx-auto mb-4" />
-          <h3 className="text-2xl font-bold text-blue-600 mb-2">Sanad</h3>
+          <h3 className="text-2xl font-bold text-blue-600 mb-2">
+            {t("waitingVerifyEmail.title")}
+          </h3>
           <h5 className="text-lg font-medium mb-4">
-            {t("verifyEmail.title", "برجاء مراجعة البريد الإلكتروني")}
+            {t("waitingVerifyEmail.subtitle")}
           </h5>
           <p className="text-gray-700 mb-6">
-            {t(
-              "verifyEmail.subtitle",
-              "لقد قمنا بإرسال رابط التحقق إلى بريدك الإلكتروني لاستكمال عملية التسجيل. من فضلك تحقق من بريدك."
-            )}
+            {t("waitingVerifyEmail.description")}
           </p>
 
-          <button
-            onClick={logout}
-            className="w-full bg-red-600 text-white py-2 rounded-lg hover:bg-red-700 transition"
+          <Link
+            to="/login"
+            className="w-full bg-purple-600 text-white py-2 rounded-lg hover:bg-purple-700 transition inline-block"
           >
-            {t("logout", "تسجيل الخروج")}
-          </button>
+            {t("waitingVerifyEmail.goToLogin")}
+          </Link>
         </div>
       </div>
 
