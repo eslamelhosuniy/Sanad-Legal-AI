@@ -14,73 +14,64 @@ type AuthContextType = {
   login: (email: string, password: string) => Promise<void>;
   register: (name: string, email: string, password: string) => Promise<void>;
   logout: () => void;
+  updateUser: (updated: Partial<User>) => void; // ✅ نضيف updateUser
+  addConversation: (conv: any) => void; // ✅ نضيف addConversation
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-const API_BASE =
-  "https://sanad-backend-production-cbbc.up.railway.app/api/Auth";
+const API_BASE = "https://sanad-backend-production-cbbc.up.railway.app/api";
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const navigate = useNavigate();
 
-  // قراءة المستخدم من localStorage مرة واحدة عند إنشاء الـ state
   const [user, setUser] = useState<User>(() => {
     const stored = localStorage.getItem("user");
     if (stored) {
       try {
         return JSON.parse(stored);
-      } catch (err) {
-        console.error("Failed to parse stored user", err);
+      } catch {
         localStorage.removeItem("user");
       }
     }
     return null;
   });
 
+
+
+  const addConversation = (conv: any) => {
+    setUser((prev) => {
+      if (!prev) return prev;
+      const newUser = {
+        ...prev,
+        conversations: [...(prev.conversations || []), conv],
+      };
+      localStorage.setItem("user", JSON.stringify(newUser));
+      return newUser;
+    });
+  };
+
   const register = async (name: string, email: string, password: string) => {
-    const res = await fetch(`${API_BASE}/register`, {
+    const res = await fetch(`${API_BASE}/Auth/register`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ name, email, password }),
     });
 
     const data = await res.json().catch(() => ({}));
-    console.log("REGISTER response:", data);
-
-    if (!res.ok) {
-      const errorMsg =
-        data?.errors?.Password?.[0] ||
-        data?.errors?.Email?.[0] ||
-        data?.errors?.Name?.[0] ||
-        data?.message ||
-        "Register failed";
-
-      throw new Error(errorMsg);
-    }
-
+    if (!res.ok) throw new Error(data?.message || "Register failed");
     navigate("/waiting_verify_email");
   };
 
   const login = async (email: string, password: string) => {
-    const res = await fetch(`${API_BASE}/login`, {
+    const res = await fetch(`${API_BASE}/Auth/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password }),
     });
 
     const data = await res.json().catch(() => ({}));
-    // console.log("LOGIN response:", data);
-
-    if (!res.ok) {
-      const errorMsg =
-        data?.errors?.Password?.[0] ||
-        data?.errors?.Email?.[0] ||
-        data?.message ||
-        "Login failed";
-
-      throw new Error(errorMsg);
-    }
+    if (!res.ok) throw new Error(data?.message || "Login failed");
 
     const userObj: User = {
       id: data.id,
@@ -100,8 +91,25 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     navigate("/", { replace: true });
   };
 
+  const updateUser = async (updates: Partial<User>) => {
+    if (!user) return;
+
+    const res = await fetch(`${API_BASE}/Users/${user.id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(updates),
+    });
+
+    if (!res.ok) throw new Error("Failed to update user");
+
+    // ندمج التعديلات مع الداتا القديمة
+    const updatedUser = { ...user, ...updates };
+    setUser(updatedUser);
+    localStorage.setItem("user", JSON.stringify(updatedUser));
+  };
+
   return (
-    <AuthContext.Provider value={{ user, login, register, logout }}>
+    <AuthContext.Provider value={{ user, login, register, logout, updateUser , addConversation}}>
       {children}
     </AuthContext.Provider>
   );

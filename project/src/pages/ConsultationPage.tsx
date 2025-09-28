@@ -1,3 +1,5 @@
+import { useEffect } from "react";
+import { useParams } from "react-router-dom"; // ✅ نستخدم البارامز من الرواتر
 import Sidebar from "../components/Layout/Sidebar";
 import MainNavbar from "../components/Layout/Navbar";
 import ChatHeader from "../components/chat/ChatHeader";
@@ -5,35 +7,51 @@ import MessagesList from "../components/chat/MessageList";
 import QuickReplies from "../components/chat/QuickReplies";
 import ChatInput from "../components/chat/ChatInput";
 import { useChat } from "../hooks/useChat";
-import { useEffect } from "react";
 
 export default function ConsultationPage() {
-  const { messages, inputMessage, setInputMessage, isLoading, sendMessage } = useChat();
+  const { id } = useParams(); // ✅ id بتاع المحادثة من اللينك
+  console.log("id", id);
+  
+  const { 
+    messages, 
+    inputMessage, 
+    setInputMessage, 
+    isLoading, 
+    sendMessage,
+    loadConversation // ✅ الفنكشن الجديدة اللي ضفناها في useChat
+  } = useChat();
 
-useEffect(() => {
-  function handleKeyDown(e: KeyboardEvent) {
-    if (e.code === "Enter") {
-      e.preventDefault();
-      sendMessage();
+  // ✅ أول ما الصفحة تتفتح يجيب المحادثة لو فيه id
+  useEffect(() => {
+    if (id) {
+      loadConversation(Number(id));
     }
-  }
-function newLine(e : KeyboardEvent){
-    if (e.code === "Enter" && e.shiftKey) {
-    e.preventDefault();
-    setInputMessage(inputMessage + "\n");
-  }
-}
-  
-  document.addEventListener("keydown", handleKeyDown);
-  document.addEventListener("keydown", newLine);
+  }, [id, loadConversation]);
 
-  
-  return () => {
-    document.removeEventListener("keydown", handleKeyDown);
-    document.removeEventListener("keydown", newLine);
-  };
-}, [sendMessage, inputMessage, setInputMessage]);
+  // ✅ هندل الإنتر والشفت+إنتر
+  useEffect(() => {
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.code === "Enter" && !e.shiftKey) {
+        e.preventDefault();
+        sendMessage();
+      }
+    }
 
+    function newLine(e: KeyboardEvent) {
+      if (e.code === "Enter" && e.shiftKey) {
+        e.preventDefault();
+        setInputMessage(inputMessage + "\n");
+      }
+    }
+
+    document.addEventListener("keydown", handleKeyDown);
+    document.addEventListener("keydown", newLine);
+
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+      document.removeEventListener("keydown", newLine);
+    };
+  }, [sendMessage, inputMessage, setInputMessage]);
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-neutral-darker">

@@ -1,10 +1,8 @@
-import React, { useState } from 'react';
-import { ExternalLink, UserCheck } from 'lucide-react';
+import React, { useState } from "react";
+import { ExternalLink, UserCheck } from "lucide-react";
 
 import { useTranslation } from "react-i18next";
-import PopUp from './PopUp';
-
-
+import PopUp from "./PopUp";
 
 interface ChatBubbleProps {
   message: string;
@@ -14,39 +12,43 @@ interface ChatBubbleProps {
   sources?: string[];
 }
 
-
-const ChatBubble: React.FC<ChatBubbleProps> = ({ 
-
-  message, 
-  isUser, 
-  timestamp, 
+const ChatBubble: React.FC<ChatBubbleProps> = ({
+  message,
+  isUser,
+  timestamp,
   showActions = true,
-  sources 
+  sources,
 }) => {
   const [pop, setPop] = useState(false);
   const { t } = useTranslation();
 
-function togglePop() {
-  setPop(!pop);
-}
+  function togglePop() {
+    setPop(!pop);
+  }
   return (
-    <div className={`flex ${isUser ? 'justify-end' : 'justify-start'} mb-6`}>
-      <div className={`max-w-3xl ${isUser ? 'ml-12' : 'mr-12'}`}>
+    <div className={`flex ${isUser ? "justify-end" : "justify-start"} mb-6`}>
+      <div className={`max-w-3xl ${isUser ? "ml-12" : "mr-12"}`}>
         <div
           className={`px-6 py-2 rounded-chat ${
-            isUser 
-              ? 'bg-primary-pink text-neutral-dark' 
-              : 'bg-accent-purple text-white'
+            isUser
+              ? "bg-primary-pink text-neutral-dark"
+              : "bg-accent-purple text-white"
           } shadow-lg`}
         >
-          <p className="text-base leading-relaxed whitespace-pre-wrap">{message}</p>
+          <p className="text-base leading-relaxed whitespace-pre-wrap">
+            {message}
+          </p>
           {timestamp && (
-            <p className={`text-xs mt-2 ${isUser ? 'text-neutral-medium' : 'text-white/70'}`}>
+            <p
+              className={`text-xs mt-2 ${
+                isUser ? "text-neutral-medium" : "text-white/70"
+              }`}
+            >
               {timestamp}
             </p>
           )}
         </div>
-        
+
         {sources && sources.length > 0 && (
           <div className="mt-3 flex flex-wrap gap-2">
             {sources.map((source, index) => (
@@ -60,22 +62,33 @@ function togglePop() {
             ))}
           </div>
         )}
-        
+
         {showActions && !isUser && (
           <div className="mt-4 flex space-x-3 space-x-reverse">
-            <button className="flex items-center mx-2 space-x-2 space-x-reverse bg-white dark:bg-neutral-dark text-accent-purple px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-50 dark:hover:bg-neutral-medium transition-colors shadow-md">
+            <button className="flex relative items-center mx-2 space-x-2 space-x-reverse bg-white dark:bg-neutral-dark text-accent-purple px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-50 dark:hover:bg-neutral-medium transition-colors shadow-md">
               <ExternalLink className="w-4 h-4" />
               <span>{t("chat.check_resource")}</span>
+              <span className="absolute -top-4 -right-7 bg-danger text-white text-[13px] font-bold px-3 py-1 rounded-full transform rotate-12 shadow">
+                {t("lawyers.lawyerCard.actions.soon")}
+              </span>
             </button>
-            <button onClick={togglePop} className="flex items-center mx-2 space-x-2 space-x-reverse bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-md">
+            <button
+              onClick={togglePop}
+              className="flex relative items-center mx-3 space-x-2 space-x-reverse bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-md"
+            >
               <UserCheck className="w-4 h-4" />
               <span>{t("chat.contact_lawyer")}</span>
+              <span className="absolute -top-4 -right-7 bg-danger text-white text-[13px] font-bold px-3 py-1 rounded-full transform rotate-12 shadow">
+                {t("lawyers.lawyerCard.actions.soon")}
+              </span>
             </button>
           </div>
         )}
-        {pop && <PopUp  onClose={togglePop} >
-          <p>{t("soon")}</p>
-        </PopUp> }
+        {pop && (
+          <PopUp onClose={togglePop}>
+            <p>{t("soon")}</p>
+          </PopUp>
+        )}
       </div>
     </div>
   );

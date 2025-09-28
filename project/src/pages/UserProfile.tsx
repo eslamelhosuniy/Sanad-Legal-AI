@@ -1,3 +1,4 @@
+// UserProfile.tsx
 import React, { useState } from "react";
 import {
   User,
@@ -16,6 +17,7 @@ import { useTranslation } from "react-i18next";
 import { useAuth } from "../contexts/AuthContext";
 
 interface UserData {
+  id: string;
   name: string;
   email: string;
   phone: string;
@@ -26,21 +28,56 @@ interface UserData {
 }
 
 const UserProfile: React.FC = () => {
-  const { user } = useAuth();
-  const { t } = useTranslation();
-  const [isEditing, setIsEditing] = useState(false);
-  const [userData, setUserData] = useState<UserData>(user);
+  const { user, updateUser } = useAuth();
 
-  const [editData, setEditData] = useState<UserData>(user);
+  const { t } = useTranslation();
+
+  const initialUserData: UserData = {
+    id: user?.id ?? "",
+    name: (user as any)?.name ?? "",
+    email: (user as any)?.email ?? "",
+    phone: (user as any)?.phone ?? "",
+    location: (user as any)?.location ?? "",
+    birthDate: (user as any)?.birthDate ?? "",
+    profession: (user as any)?.profession ?? "",
+    bio: (user as any)?.bio ?? "",
+  };
+
+  const [isEditing, setIsEditing] = useState(false);
+  const [userData, setUserData] = useState<UserData>(initialUserData);
+  console.log(user);
+
+  const [editData, setEditData] = useState<UserData>(initialUserData);
+  const [loading, setLoading] = useState(false);
 
   const handleEdit = () => {
     setIsEditing(true);
     setEditData(userData);
   };
 
-  const handleSave = () => {
-    setUserData(editData);
-    setIsEditing(false);
+  const handleSave = async () => {
+    if (!user?.id) {
+      alert(t("profile.noUserId", "لا يوجد معرف مستخدم."));
+      return;
+    }
+
+    setLoading(true);
+    try {
+      
+      await updateUser(editData);
+
+      
+      setUserData(editData);
+      setEditData(editData);
+      setIsEditing(false);
+
+      console.log("Profile updated successfully");
+    } catch (err: any) {
+      console.error("Error updating user:", err);
+     
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleCancel = () => {
@@ -52,12 +89,28 @@ const UserProfile: React.FC = () => {
     setEditData((prev) => ({ ...prev, [field]: value }));
   };
 
-const consultationStats = [
-  { label: t("profile.stats.consultations.label"), value: "24", trend: t("profile.stats.consultations.trend") },
-  { label: t("profile.stats.documents.label"), value: "12", trend: t("profile.stats.documents.trend") },
-  { label: t("profile.stats.research.label"), value: "38", trend: t("profile.stats.research.trend") },
-  { label: t("profile.stats.memberSince.label"), value: "يناير 2023", trend: t("profile.stats.memberSince.trend") }
-];
+  const consultationStats = [
+    {
+      label: t("profile.stats.consultations.label"),
+      value: "24",
+      trend: t("profile.stats.consultations.trend"),
+    },
+    {
+      label: t("profile.stats.documents.label"),
+      value: "12",
+      trend: t("profile.stats.documents.trend"),
+    },
+    {
+      label: t("profile.stats.research.label"),
+      value: "38",
+      trend: t("profile.stats.research.trend"),
+    },
+    {
+      label: t("profile.stats.memberSince.label"),
+      value: "يناير 2023",
+      trend: t("profile.stats.memberSince.trend"),
+    },
+  ];
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-neutral-darker">
@@ -81,14 +134,6 @@ const consultationStats = [
             <div className="bg-white dark:bg-neutral-dark rounded-card shadow-sm border border-gray-200 dark:border-neutral-medium mb-8">
               <div className="p-8">
                 <div className="flex items-start space-x-6 space-x-reverse">
-                  {/* <div className="w-24 h-24 bg-gradient-to-br from-accent-purple to-purple-600 rounded-full flex items-center justify-center text-white text-3xl font-semibold">
-                    {userData.name
-                      .split(" ")
-                      .map((n) => n[0])
-                      .join("")
-                      .slice(0, 2)}
-                  </div> */}
-
                   <div className="flex-1">
                     <div className="flex items-center justify-between mb-4">
                       <div>
@@ -116,15 +161,25 @@ const consultationStats = [
                             <Button
                               size="sm"
                               onClick={handleSave}
+                              disabled={loading}
                               className="flex items-center space-x-2 space-x-reverse"
                             >
-                              <Save className="w-4 h-4" />
-                              <span>{t("profile.save")}</span>
+                              {loading ? (
+                                <span>
+                                  {t("profile.saving", "جاري الحفظ...")}
+                                </span>
+                              ) : (
+                                <>
+                                  <Save className="w-4 h-4" />
+                                  <span>{t("profile.save")}</span>
+                                </>
+                              )}
                             </Button>
                             <Button
                               variant="outline"
                               size="sm"
                               onClick={handleCancel}
+                              disabled={loading}
                               className="flex items-center space-x-2 space-x-reverse"
                             >
                               <X className="w-4 h-4" />
@@ -216,7 +271,7 @@ const consultationStats = [
                         <div className="flex items-center space-x-3 space-x-reverse">
                           <Phone className="w-5 h-5 text-neutral-medium" />
                           <span className="text-neutral-dark dark:text-white">
-                            {userData.phone}
+                            01234567890
                           </span>
                         </div>
                       )}
@@ -240,7 +295,7 @@ const consultationStats = [
                         <div className="flex items-center space-x-3 space-x-reverse">
                           <MapPin className="w-5 h-5 text-neutral-medium" />
                           <span className="text-neutral-dark dark:text-white">
-                            {userData.location}
+                            مصر القاهرة
                           </span>
                         </div>
                       )}
@@ -264,9 +319,7 @@ const consultationStats = [
                         <div className="flex items-center space-x-3 space-x-reverse">
                           <Calendar className="w-5 h-5 text-neutral-medium" />
                           <span className="text-neutral-dark dark:text-white">
-                            {new Date(userData.birthDate).toLocaleDateString(
-                              "ar-EG"
-                            )}
+                            1999-01-01
                           </span>
                         </div>
                       )}
@@ -290,7 +343,7 @@ const consultationStats = [
                         <div className="flex items-center space-x-3 space-x-reverse">
                           <User className="w-5 h-5 text-neutral-medium" />
                           <span className="text-neutral-dark dark:text-white">
-                            {userData.profession}
+                            محامى
                           </span>
                         </div>
                       )}
@@ -305,14 +358,12 @@ const consultationStats = [
                         <textarea
                           rows={4}
                           value={editData.bio}
-                          onChange={(e) =>
-                            handleChange("bio", e.target.value)
-                          }
+                          onChange={(e) => handleChange("bio", e.target.value)}
                           className="w-full rounded-lg border border-gray-300 dark:border-neutral-medium bg-white dark:bg-neutral-medium px-4 py-3 text-neutral-dark dark:text-white focus:outline-none focus:ring-2 focus:ring-accent-purple resize-none"
                         />
                       ) : (
                         <p className="text-neutral-dark dark:text-white leading-relaxed">
-                          {userData.bio}
+                          محامى بالنقض
                         </p>
                       )}
                     </div>

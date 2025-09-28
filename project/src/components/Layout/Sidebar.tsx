@@ -70,11 +70,7 @@ function Sidebar() {
     {
       section: t("sidebar.settings"),
       items: [
-        {
-          path: "/settings",
-          icon: Settings,
-          label: t("sidebar.general_settings"),
-        },
+   
         { path: "/privacy", icon: Shield, label: t("sidebar.privacy") },
       ],
     },
@@ -134,9 +130,7 @@ function Sidebar() {
                 </p>
               </div>
             </div>
-            <button className="w-full bg-white/20 hover:bg-white/30 text-white text-sm font-medium py-2 rounded-lg transition-colors">
-              {t("sidebar.edit-profile")}
-            </button>
+         
           </div>
 
           <nav className="space-y-6">

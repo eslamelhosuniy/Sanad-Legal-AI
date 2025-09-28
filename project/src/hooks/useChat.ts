@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "../contexts/AuthContext";
 
@@ -11,24 +11,30 @@ export interface Message {
   role?: string;
 }
 
-export const useChat = () => {
+export const useChat = (initialConversationId?: number) => {
   const { t } = useTranslation();
+  const { user, addConversation } = useAuth();
+
   const [messages, setMessages] = useState<Message[]>([
     {
-      id: "1",
+      id: "welcome-1",
       content: t("chat.firstMessage"),
       isUser: false,
-      timestamp: "10:00",
+      timestamp: new Date().toLocaleTimeString("ar-EG", {
+        hour: "2-digit",
+        minute: "2-digit",
+      }),
+      role: "assistant",
     },
   ]);
-
   const [inputMessage, setInputMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [conversationId, setConversationId] = useState<number | null>(null);
+  const [conversationId, setConversationId] = useState<number | null>(
+    initialConversationId || null
+  );
 
-  // API لفتح محادثة جديدة
-  const { user } = useAuth();
-  console.log(user.id);
+  // 🟢 Ref علشان ما يحملش نفس المحادثة مرتين
+  const loadedConvRef = useRef<Set<number>>(new Set());
 
   const createConversation = async (
     userId: string,
@@ -38,21 +44,18 @@ export const useChat = () => {
       userId
     )}&Title=${encodeURIComponent(title)}`;
 
-    const res = await fetch(url, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-    });
+    const res = await fetch(url, { method: "POST" });
 
-    const text = await res.text(); // علشان تشوف الرد الخام
-    console.log("🔹 Conversation response:", res.status, text);
+    if (!res.ok) {
+      const text = await res.text();
+      console.error("❌ Failed to create conversation:", res.status, text);
+      throw new Error("Failed to create conversation");
+    }
 
-    if (!res.ok) throw new Error("Failed to create conversation");
-
-    const data = JSON.parse(text);
+    const data = await res.json();
     return data.id;
   };
 
-  // API لإرسال رسالة
   const sendMessageApi = async (content: string, convId: number) => {
     const res = await fetch(
       "https://sanad-backend-production-cbbc.up.railway.app/api/Messages",
@@ -67,24 +70,74 @@ export const useChat = () => {
       }
     );
 
-    if (!res.ok) throw new Error("Failed to send message");
+    if (!res.ok) {
+      const text = await res.text();
+      console.error("❌ Failed to send message:", res.status, text);
+      throw new Error("Failed to send message");
+    }
 
-    const data = await res.json(); // قراءة واحدة فقط
-    console.log(data); // طباعة النتيجة
-    return data; // إعادة النتيجة
+    return res.json();
   };
 
-  // الفنكشن الأساسية
+  const loadConversation = async (convId: number) => {
+    if (!convId || loadedConvRef.current.has(convId)) return;
+    setIsLoading(true);
+
+    try {
+      const res = await fetch(
+        `https://sanad-backend-production-cbbc.up.railway.app/api/Messages/conversation/${convId}`
+      );
+
+      if (!res.ok) {
+        const text = await res.text();
+        console.error("❌ Failed to load conversation:", res.status, text);
+        throw new Error("Failed to load conversation");
+      }
+
+      const data = await res.json();
+      console.log("🔹 Loaded conversation:", data);
+
+      const msgs = Array.isArray(data) ? data : data?.messages || [];
+
+      const loadedMessages: Message[] = msgs.map((msg: any) => ({
+        id: msg.id?.toString() || crypto.randomUUID(),
+        content: msg.content || "",
+        isUser: msg.role === "user",
+        timestamp: msg.createdAt
+          ? new Date(msg.createdAt).toLocaleTimeString("ar-EG", {
+              hour: "2-digit",
+              minute: "2-digit",
+            })
+          : new Date().toLocaleTimeString("ar-EG", {
+              hour: "2-digit",
+              minute: "2-digit",
+            }),
+        sources: msg.sources || [],
+        role: msg.role || "assistant",
+      }));
+
+      setMessages(loadedMessages);
+      setConversationId(convId);
+      loadedConvRef.current.add(convId); // ✅ متتعملش تاني
+    } catch (err) {
+      console.error("Error loading conversation:", err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const sendMessage = async () => {
-    if (!inputMessage.trim() || isLoading) return;
+    if (!inputMessage.trim() || isLoading || !user) return;
 
     const userMessage: Message = {
+      id: Date.now().toString(),
       content: inputMessage,
       isUser: true,
       timestamp: new Date().toLocaleTimeString("ar-EG", {
         hour: "2-digit",
         minute: "2-digit",
       }),
+      role: "user",
     };
 
     setMessages((prev) => [...prev, userMessage]);
@@ -95,31 +148,51 @@ export const useChat = () => {
       let convId = conversationId;
 
       if (!convId) {
-        convId = await createConversation(user.id, "test");
+        // 🟢 أول رسالة كعنوان
+        const title =
+          userMessage.content.length > 30
+            ? userMessage.content.slice(0, 30) + "..."
+            : userMessage.content;
+
+        convId = await createConversation(user.id, title);
         setConversationId(convId);
+
+        // ✅ أضف المحادثة للـ history فوراً
+        addConversation({
+          id: convId,
+          title,
+          createdAt: new Date().toISOString(),
+        });
       }
 
       const response = await sendMessageApi(userMessage.content, convId);
 
       const aiMessage: Message = {
-        id: response.id.toString(),
-        content: response.content,
+        id: response.id?.toString() || crypto.randomUUID(),
+        content: response.content || "",
         isUser: false,
         timestamp: new Date().toLocaleTimeString("ar-EG", {
           hour: "2-digit",
           minute: "2-digit",
         }),
         sources: response.sources || [],
-        role: response.role || "assistant", // هنا تحدد الدور مباشرة
+        role: response.role || "assistant",
       };
 
       setMessages((prev) => [...prev, aiMessage]);
-    } catch (error) {
-      console.error("Error sending message:", error);
+    } catch (err) {
+      console.error("Error sending message:", err);
     } finally {
       setIsLoading(false);
     }
   };
+
+  // 🟢 لو فيه convId من الأول → نحمل مرة واحدة بس
+  useEffect(() => {
+    if (conversationId) {
+      loadConversation(conversationId);
+    }
+  }, [conversationId]);
 
   return {
     messages,
@@ -127,5 +200,6 @@ export const useChat = () => {
     setInputMessage,
     isLoading,
     sendMessage,
+    loadConversation,
   };
 };

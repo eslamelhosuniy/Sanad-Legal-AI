@@ -1,10 +1,11 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import MainNavbar from "../components/Layout/Navbar";
 import Sidebar from "../components/Layout/Sidebar";
 import { useAuth } from "../contexts/AuthContext";
 import PopUp from "../components/UI/PopUp";
 import { useTranslation } from "react-i18next";
-import { useChat } from "../hooks/useChat";
+import { MessageCircle } from "lucide-react";
 
 function ConsultationHistory() {
   const { user } = useAuth();
@@ -14,7 +15,7 @@ function ConsultationHistory() {
   >(null);
 
   const { t } = useTranslation();
-  const { setConversationId } = useChat();
+  const navigate = useNavigate();
 
   const deleteConversation = async (id: string) => {
     try {
@@ -37,6 +38,11 @@ function ConsultationHistory() {
     }
   };
 
+  // 🟢 لما اضغط على محادثة يوديني على صفحة الشات
+  const openConversation = (id: string) => {
+    navigate(`/consultation/${id}`);
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-neutral-darker">
       <MainNavbar />
@@ -47,25 +53,36 @@ function ConsultationHistory() {
             {t("consultationHistory.title")}
           </h1>
           <ul className="space-y-3">
-            {conversations.map((conversation: any) => (
-              <li
-                key={conversation.id}
-                className="flex items-center justify-between bg-white shadow rounded-lg px-4 py-2 cursor-pointer"
-              >
-                <span
-                  onClick={() => setConversationId(conversation.id)}
-                  className="text-lg font-medium"
+            {conversations
+              .slice()
+              .reverse()
+              .map((conversation: any) => (
+                <div
+                  key={conversation.id}
+                  className="flex items-center justify-between p-4 bg-white dark:bg-neutral-medium rounded-xl shadow-md hover:shadow-lg transition"
                 >
-                  {conversation.title}
-                </span>
-                <button
-                  onClick={() => setSelectedConversation(conversation.id)}
-                  className="bg-red-500 text-white px-3 py-1 rounded-lg hover:bg-red-600 transition"
-                >
-                  {t("consultationHistory.delete")}
-                </button>
-              </li>
-            ))}
+                  {/* Icon + Title */}
+                  <div className="flex items-center space-x-3 space-x-reverse">
+                    <div className="w-10 h-10 bg-accent-purple/10 rounded-full flex items-center justify-center">
+                      <MessageCircle className="w-5 h-5 text-accent-purple" />
+                    </div>
+                    <h4
+                      onClick={() => openConversation(conversation.id)}
+                      className="font-medium text-neutral-dark dark:text-white truncate max-w-[180px] cursor-pointer"
+                    >
+                      {conversation.title}
+                    </h4>
+                  </div>
+
+                  {/* Delete Button */}
+                  <button
+                    onClick={() => setSelectedConversation(conversation.id)}
+                    className="bg-red-500 text-white px-3 py-1.5 rounded-lg text-sm font-medium hover:bg-red-600 focus:ring-2 focus:ring-red-400 focus:outline-none transition"
+                  >
+                    {t("consultationHistory.delete")}
+                  </button>
+                </div>
+              ))}
           </ul>
         </main>
       </div>

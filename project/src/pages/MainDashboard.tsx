@@ -151,9 +151,7 @@ const MainDashboard: React.FC = () => {
                     <h2 className="text-xl font-semibold text-neutral-dark dark:text-white">
                       {t("recentActivity.title")}
                     </h2>
-                    <Link to="/history" className="text-accent-purple hover:text-purple-600 text-sm font-medium">
-                      {t("recentActivity.viewAll")}
-                    </Link>
+                 
                   </div>
                   
                   <div className="space-y-4">

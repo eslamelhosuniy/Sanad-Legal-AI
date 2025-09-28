@@ -383,7 +383,7 @@ const LawyersDashboard: React.FC = () => {
                       {/* Actions */}
                       <div className="flex items-center space-x-3 space-x-reverse">
                         <div className="relative inline-block">
-                          {/* زر الحجز */}
+                        
                           <Button
                             size="sm"
                             className="flex items-center space-x-2 space-x-reverse"
@@ -391,7 +391,7 @@ const LawyersDashboard: React.FC = () => {
                             <Calendar className="w-4 h-4" />
                             <span>{t("lawyers.lawyerCard.actions.book")}</span>
                           </Button>
-                          {/* شارة قريباً */}
+                        
                           <span className="absolute -top-4 -right-4 bg-danger text-white text-[13px] font-bold px-3 py-1 rounded-full transform rotate-12 shadow">
                             {t("lawyers.lawyerCard.actions.soon")}
                           </span>
