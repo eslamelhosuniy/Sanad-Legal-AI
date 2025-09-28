@@ -1,6 +1,6 @@
 import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
-const savedLang = localStorage.getItem("lang")
+const savedLang = localStorage.getItem("lang");
 i18n.use(initReactI18next).init({
   resources: {
     ar: {
@@ -110,10 +110,9 @@ i18n.use(initReactI18next).init({
         landingPage: {
           appName: "الوكيل القانوني الذكي",
           login: "تسجيل الدخول",
-          logout:"تسجيل خروج",
+          logout: "تسجيل خروج",
           hero: {
-            title:
-              "الوصول السريع والدقيق للمعلومات القانوني في مصر",
+            title: "الوصول السريع والدقيق للمعلومات القانوني في مصر",
             subtitle:
               "احصل على استشارات قانونية فورية، حلل مستنداتك، وابحث في القوانين المصرية بمساعدة الذكاء الاصطناعي المتقدم",
           },
@@ -160,6 +159,216 @@ i18n.use(initReactI18next).init({
             privacyPolicy: "سياسة الخصوصية",
             terms: "شروط الاستخدام",
           },
+        }, // جوه resources.ar.translation
+        profile: {
+          title: "الملف الشخصي",
+          subtitle: "إدارة معلوماتك الشخصية وإعدادات حسابك",
+          edit: "تعديل الملف",
+          save: "حفظ",
+          cancel: "إلغاء",
+          info: "المعلومات الشخصية",
+          fields: {
+            name: "الاسم الكامل",
+            email: "البريد الإلكتروني",
+            phone: "رقم الهاتف",
+            location: "الموقع",
+            birthDate: "تاريخ الميلاد",
+            profession: "المهنة",
+            bio: "نبذة شخصية",
+          },
+          statsTitle: "إحصائيات الاستخدام",
+          stats: {
+            consultations: {
+              label: "إجمالي الاستشارات",
+              trend: "+3 هذا الشهر",
+            },
+            documents: {
+              label: "المستندات المحللة",
+              trend: "+2 هذا الشهر",
+            },
+            research: {
+              label: "البحوث القانونية",
+              trend: "+8 هذا الشهر",
+            },
+            memberSince: {
+              label: "عضو منذ",
+              trend: "سنة واحدة",
+            },
+          },
+          premium: {
+            title: "عضوية مميزة",
+            desc: "ترقى للعضوية المميزة للحصول على مزيد من المزايا",
+            upgrade: "ترقية الحساب",
+          },
+        },
+        uploadDocuments: {
+          title: "تحليل المستندات القانونية",
+          subtitle:
+            "ارفع عقد أو مستند قانوني واحصل على تحليل شامل مع الملاحظات والاقتراحات",
+
+          uploadSection: {
+            heading: "ارفع مستندك القانوني",
+            description: "ندعم ملفات PDF, DOC, DOCX حتى 10 ميجابايت",
+            button: "اختر ملف",
+            analyze: "ابدأ التحليل",
+            analyzing: "جاري التحليل...",
+            cancel: "إلغاء",
+          },
+
+          loading: {
+            title: "جاري تحليل المستند...",
+            desc: "قد يستغرق هذا بضع دقائق حسب حجم وتعقد المستند",
+          },
+
+          results: {
+            summary: "ملخص المستند",
+            keyPoints: "النقاط الرئيسية",
+            observations: "الملاحظات القانونية",
+            suggestions: "التوصيات والاقتراحات",
+          },
+
+          actions: {
+            download: "تحميل التقرير",
+            preview: "معاينة التقرير",
+            analyzeAnother: "تحليل مستند آخر",
+          },
+        },
+        lawyers: {
+          title: "شبكة المحامين المتخصصين",
+          subtitle: "تواصل مع محامين خبراء للحصول على استشارة قانونية شخصية",
+          searchPlaceholder: "ابحث بالاسم أو التخصص...",
+          filters: {
+            title: "فلترة",
+            specialization: "التخصص",
+            location: "الموقع",
+            priceRange: "نطاق السعر",
+            allSpecializations: "جميع التخصصات",
+            allLocations: "جميع المواقع",
+            allPrices: "جميع الأسعار",
+            priceOptions: {
+              "0-300": "أقل من 300 ج.م",
+              "300-500": "300-500 ج.م",
+              "500-800": "500-800 ج.م",
+              "800+": "أكثر من 800 ج.م",
+            },
+          },
+          stats: {
+            lawyers: "محامي متخصص",
+            availability: "متاح دائماً",
+            rating: "متوسط التقييم",
+          },
+          lawyerCard: {
+            experience: "خبرة",
+            languages: "اللغات",
+            reviews: "{{count}} تقييم",
+            available: "متاح الآن",
+            notAvailable: "غير متاح",
+            actions: {
+              book: "احجز استشارة",
+              soon: "قريباً",
+              message: "أرسل رسالة",
+              call: "اتصال سريع",
+            },
+          },
+          loadMore: "عرض المزيد من المحامين",
+        },
+        privacy: {
+          title: "الخصوصية والأمان",
+          subtitle:
+            "نحن ملتزمون بحماية خصوصيتك وأمان بياناتك بأعلى معايير الحماية",
+          overview: {
+            title: "حماية شاملة لبياناتك",
+            description:
+              "نطبق أحدث تقنيات الأمان والتشفير لضمان سرية معلوماتك القانونية",
+            aes: "تشفير AES",
+            uptime: "وقت التشغيل",
+            monitoring: "مراقبة أمنية",
+          },
+          featuresTitle: "ميزات الخصوصية والأمان",
+          statuses: {
+            active: "نشط",
+            available: "متاح",
+          },
+          features: {
+            encryption: {
+              title: "تشفير البيانات",
+              description:
+                "جميع بياناتك محمية بتشفير AES-256 من الطراز العسكري",
+            },
+            noSharing: {
+              title: "عدم المشاركة",
+              description: "لا نشارك بياناتك الشخصية مع أطراف ثالثة أبداً",
+            },
+            advancedProtection: {
+              title: "حماية متقدمة",
+              description:
+                "أنظمة حماية متطورة ضد الاختراقات والهجمات السيبرانية",
+            },
+            deleteData: {
+              title: "حذف البيانات",
+              description: "يمكنك حذف جميع بياناتك نهائياً في أي وقت",
+            },
+          },
+          dataManagement: {
+            title: "إدارة البيانات",
+            subtitle:
+              "فيما يلي تفصيل للبيانات التي نحتفظ بها ومدة الاحتفاظ بها",
+            types: {
+              personal: {
+                type: "المعلومات الشخصية",
+                description: "الاسم، البريد الإلكتروني، رقم الهاتف",
+                retention: "5 سنوات",
+              },
+              consultations: {
+                type: "الاستشارات القانونية",
+                description: "الأسئلة والإجابات والمحادثات",
+                retention: "7 سنوات",
+              },
+              documents: {
+                type: "المستندات المرفوعة",
+                description: "العقود والملفات التي تم تحليلها",
+                retention: "3 سنوات",
+              },
+              usage: {
+                type: "بيانات الاستخدام",
+                description: "إحصائيات الاستخدام وسجل الأنشطة",
+                retention: "سنة واحدة",
+              },
+            },
+            deleteBtn: "حذف هذه البيانات",
+          },
+          actions: {
+            download: {
+              title: "تحميل بياناتك",
+              description: "احصل على نسخة من جميع البيانات المحفوظة في حسابك",
+              btn: "طلب تحميل البيانات",
+            },
+            settings: {
+              title: "إعدادات الخصوصية",
+              description: "تحكم في كيفية استخدام بياناتك ومشاركتها",
+              btn: "إدارة الإعدادات",
+            },
+          },
+          dangerZone: {
+            title: "منطقة الخطر",
+            warning:
+              "احذف جميع بياناتك نهائياً من النظام. هذا الإجراء لا يمكن التراجع عنه وسيؤدي إلى:",
+            list: [
+              "حذف جميع الاستشارات والمحادثات",
+              "حذف جميع المستندات المرفوعة",
+              "حذف الملف الشخصي والإعدادات",
+              "إغلاق الحساب نهائياً",
+            ],
+            btn: "احذف بياناتي نهائياً",
+          },
+          contact: {
+            question: "هل لديك أسئلة حول سياسة الخصوصية أو أمان البيانات؟",
+            btn: "تواصل مع فريق الأمان",
+          },
+        },
+        consultationHistory: {
+          title: "تاريخ الاستشارات السابقة",
+          delete: "حذف",
         },
       },
     },
@@ -272,10 +481,9 @@ i18n.use(initReactI18next).init({
         landingPage: {
           appName: "Smart Legal Agent",
           login: "Login",
-          logout:"Logout",
+          logout: "Logout",
           hero: {
-            title:
-              "Fast and Accurate Access to Legal Information in Egypt",
+            title: "Fast and Accurate Access to Legal Information in Egypt",
             subtitle:
               "Get instant legal consultations, analyze your documents, and search Egyptian laws with the help of advanced AI",
           },
@@ -323,6 +531,220 @@ i18n.use(initReactI18next).init({
             privacyPolicy: "Privacy Policy",
             terms: "Terms of Use",
           },
+        },
+        profile: {
+          title: "Profile",
+          subtitle: "Manage your personal information and account settings",
+          edit: "Edit Profile",
+          save: "Save",
+          cancel: "Cancel",
+          info: "Personal Information",
+          fields: {
+            name: "Full Name",
+            email: "Email",
+            phone: "Phone",
+            location: "Location",
+            birthDate: "Birth Date",
+            profession: "Profession",
+            bio: "Bio",
+          },
+          statsTitle: "Usage Statistics",
+          stats: {
+            consultations: {
+              label: "Total Consultations",
+              trend: "+3 this month",
+            },
+            documents: {
+              label: "Analyzed Documents",
+              trend: "+2 this month",
+            },
+            research: {
+              label: "Legal Research",
+              trend: "+8 this month",
+            },
+            memberSince: {
+              label: "Member Since",
+              trend: "1 year",
+            },
+          },
+          premium: {
+            title: "Premium Membership",
+            desc: "Upgrade to premium membership for more features",
+            upgrade: "Upgrade Account",
+          },
+        },
+        uploadDocuments: {
+          title: "Legal Document Analysis",
+          subtitle:
+            "Upload a contract or legal document and get a full analysis with notes and suggestions",
+
+          uploadSection: {
+            heading: "Upload your document",
+            description: "We support PDF, DOC, DOCX files up to 10 MB",
+            button: "Choose File",
+            analyze: "Start Analysis",
+            analyzing: "Analyzing...",
+            cancel: "Cancel",
+          },
+
+          loading: {
+            title: "Analyzing document...",
+            desc: "This may take a few minutes depending on the size and complexity",
+          },
+
+          results: {
+            summary: "Document Summary",
+            keyPoints: "Key Points",
+            observations: "Legal Observations",
+            suggestions: "Recommendations & Suggestions",
+          },
+
+          actions: {
+            download: "Download Report",
+            preview: "Preview Report",
+            analyzeAnother: "Analyze Another Document",
+          },
+        },
+        lawyers: {
+          title: "Specialized Lawyers Network",
+          subtitle:
+            "Connect with expert lawyers for personalized legal consultation",
+          searchPlaceholder: "Search by name or specialization...",
+          filters: {
+            title: "Filter",
+            specialization: "Specialization",
+            location: "Location",
+            priceRange: "Price Range",
+            allSpecializations: "All specializations",
+            allLocations: "All locations",
+            allPrices: "All prices",
+            priceOptions: {
+              "0-300": "Less than 300 EGP",
+              "300-500": "300-500 EGP",
+              "500-800": "500-800 EGP",
+              "800+": "More than 800 EGP",
+            },
+          },
+          stats: {
+            lawyers: "Specialized Lawyers",
+            availability: "Always available",
+            rating: "Average Rating",
+          },
+          lawyerCard: {
+            experience: "Experience",
+            languages: "Languages",
+            reviews: "{{count}} reviews",
+            available: "Available now",
+            notAvailable: "Not available",
+            actions: {
+              book: "Book Consultation",
+              soon: "Coming Soon",
+              message: "Send Message",
+              call: "Quick Call",
+            },
+          },
+          loadMore: "Load more lawyers",
+        },
+        privacy: {
+          title: "Privacy & Security",
+          subtitle:
+            "We are committed to protecting your privacy and the security of your data with the highest standards",
+          overview: {
+            title: "Comprehensive Data Protection",
+            description:
+              "We apply the latest security and encryption technologies to ensure the confidentiality of your legal information",
+            aes: "AES Encryption",
+            uptime: "Uptime",
+            monitoring: "Security Monitoring",
+          },
+          featuresTitle: "Privacy & Security Features",
+          statuses: {
+            active: "Active",
+            available: "Available",
+          },
+          features: {
+            encryption: {
+              title: "Data Encryption",
+              description:
+                "All your data is protected with military-grade AES-256 encryption",
+            },
+            noSharing: {
+              title: "No Sharing",
+              description:
+                "We never share your personal data with third parties",
+            },
+            advancedProtection: {
+              title: "Advanced Protection",
+              description:
+                "Advanced security systems against breaches and cyberattacks",
+            },
+            deleteData: {
+              title: "Data Deletion",
+              description:
+                "You can permanently delete all your data at any time",
+            },
+          },
+          dataManagement: {
+            title: "Data Management",
+            subtitle:
+              "Below is a breakdown of the data we retain and the retention periods",
+            types: {
+              personal: {
+                type: "Personal Information",
+                description: "Name, email, phone number",
+                retention: "5 years",
+              },
+              consultations: {
+                type: "Legal Consultations",
+                description: "Questions, answers, and conversations",
+                retention: "7 years",
+              },
+              documents: {
+                type: "Uploaded Documents",
+                description: "Contracts and files that have been analyzed",
+                retention: "3 years",
+              },
+              usage: {
+                type: "Usage Data",
+                description: "Usage statistics and activity logs",
+                retention: "1 year",
+              },
+            },
+            deleteBtn: "Delete this data",
+          },
+          actions: {
+            download: {
+              title: "Download Your Data",
+              description: "Get a copy of all the data stored in your account",
+              btn: "Request Data Download",
+            },
+            settings: {
+              title: "Privacy Settings",
+              description: "Control how your data is used and shared",
+              btn: "Manage Settings",
+            },
+          },
+          dangerZone: {
+            title: "Danger Zone",
+            warning:
+              "Permanently delete all your data from the system. This action cannot be undone and will result in:",
+            list: [
+              "Delete all consultations and conversations",
+              "Delete all uploaded documents",
+              "Delete profile and settings",
+              "Close the account permanently",
+            ],
+            btn: "Delete My Data Permanently",
+          },
+          contact: {
+            question:
+              "Do you have questions about the privacy policy or data security?",
+            btn: "Contact Security Team",
+          },
+        },
+        consultationHistory: {
+          title: "Convesations History",
+          delete: "Delete",
         },
       },
     },

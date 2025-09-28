@@ -1,27 +1,26 @@
-import{ useState } from "react";
+import { useState } from "react";
 import MainNavbar from "../components/Layout/Navbar";
 import Sidebar from "../components/Layout/Sidebar";
 import { useAuth } from "../contexts/AuthContext";
 import PopUp from "../components/UI/PopUp";
+import { useTranslation } from "react-i18next";
+import { useChat } from "../hooks/useChat";
 
 function ConsultationHistory() {
   const { user } = useAuth();
-  const [conversations, setConversations] = useState(
-    user?.conversations || []
-  );
-  const [selectedConversation, setSelectedConversation] = useState<string | null>(null);
+  const [conversations, setConversations] = useState(user?.conversations || []);
+  const [selectedConversation, setSelectedConversation] = useState<
+    string | null
+  >(null);
 
-  // دالة الحذف
+  const { t } = useTranslation();
+  const { setConversationId } = useChat();
+
   const deleteConversation = async (id: string) => {
     try {
       const res = await fetch(
         `https://sanad-backend-production-cbbc.up.railway.app/api/Conversations/${id}`,
-        {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
+        { method: "DELETE", headers: { "Content-Type": "application/json" } }
       );
 
       if (!res.ok) {
@@ -29,7 +28,6 @@ function ConsultationHistory() {
         throw new Error(`Failed to delete: ${errText || res.statusText}`);
       }
 
-      // تحديث القائمة بعد الحذف
       setConversations((prev) => prev.filter((c: any) => c.id !== id));
       setSelectedConversation(null);
 
@@ -45,19 +43,26 @@ function ConsultationHistory() {
       <div className="flex h-[calc(100vh-80px)]">
         <Sidebar />
         <main className="flex-1 flex flex-col p-6">
-          <h1 className="text-2xl font-bold mb-4">سجل المحادثات</h1>
+          <h1 className="text-2xl font-bold mb-4">
+            {t("consultationHistory.title")}
+          </h1>
           <ul className="space-y-3">
             {conversations.map((conversation: any) => (
               <li
                 key={conversation.id}
-                className="flex items-center justify-between bg-white shadow rounded-lg px-4 py-2"
+                className="flex items-center justify-between bg-white shadow rounded-lg px-4 py-2 cursor-pointer"
               >
-                <span className="text-lg font-medium">{conversation.title}</span>
+                <span
+                  onClick={() => setConversationId(conversation.id)}
+                  className="text-lg font-medium"
+                >
+                  {conversation.title}
+                </span>
                 <button
                   onClick={() => setSelectedConversation(conversation.id)}
                   className="bg-red-500 text-white px-3 py-1 rounded-lg hover:bg-red-600 transition"
                 >
-                  حذف
+                  {t("consultationHistory.delete")}
                 </button>
               </li>
             ))}
@@ -65,7 +70,6 @@ function ConsultationHistory() {
         </main>
       </div>
 
-      {/* البوب أب */}
       {selectedConversation && (
         <PopUp onClose={() => setSelectedConversation(null)}>
           <p className="mb-4">هل تريد حذف هذه المحادثة؟</p>

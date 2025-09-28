@@ -35,10 +35,10 @@ function MainNavbar() {
       path: "/documents",
       icon: FileText,
       label: t("nav.documents"),
-      soon: true,
+      soon: false,
     },
-    { path: "/research", icon: Search, label: t("nav.research"), soon: true },
-    { path: "/lawyers", icon: Users, label: t("nav.lawyers"), soon: true },
+    { path: "/research", icon: Search, label: t("nav.research"), soon: false },
+    { path: "/lawyers", icon: Users, label: t("nav.lawyers"), soon: false },
     { path: "/profile", icon: User, label: t("nav.profile") },
   ];
 

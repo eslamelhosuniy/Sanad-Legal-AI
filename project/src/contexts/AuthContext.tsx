@@ -1,10 +1,4 @@
-import {
-  createContext,
-  useContext,
-  useState,
-  ReactNode,
-  useEffect,
-} from "react";
+import { createContext, useContext, useState, ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
 
 type User = {
@@ -28,36 +22,21 @@ const API_BASE =
   "https://sanad-backend-production-cbbc.up.railway.app/api/Auth";
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useState<User>(null);
   const navigate = useNavigate();
 
-  useEffect(() => {
+  // قراءة المستخدم من localStorage مرة واحدة عند إنشاء الـ state
+  const [user, setUser] = useState<User>(() => {
     const stored = localStorage.getItem("user");
     if (stored) {
       try {
-        const parsed = JSON.parse(stored);
-        setUser(parsed);
+        return JSON.parse(stored);
       } catch (err) {
         console.error("Failed to parse stored user", err);
         localStorage.removeItem("user");
       }
     }
-  }, []);
-  useEffect(() => {
-    const stored = localStorage.getItem("user");
-    if (stored) {
-      try {
-        const parsed = JSON.parse(stored);
-        setUser(parsed);
-
-        // ✅ لو اليوزر موجود يروح علطول للداشبورد
-        navigate("/dashboard");
-      } catch (err) {
-        console.error("Failed to parse stored user", err);
-        localStorage.removeItem("user");
-      }
-    }
-  }, [user, navigate]);
+    return null;
+  });
 
   const register = async (name: string, email: string, password: string) => {
     const res = await fetch(`${API_BASE}/register`, {
@@ -70,7 +49,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     console.log("REGISTER response:", data);
 
     if (!res.ok) {
-      // هنا بناخد أوضح رسالة من السيرفر
       const errorMsg =
         data?.errors?.Password?.[0] ||
         data?.errors?.Email?.[0] ||
@@ -92,7 +70,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     });
 
     const data = await res.json().catch(() => ({}));
-    console.log("LOGIN response:", data);
+    // console.log("LOGIN response:", data);
 
     if (!res.ok) {
       const errorMsg =
@@ -132,6 +110,5 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 export const useAuth = () => {
   const ctx = useContext(AuthContext);
   if (!ctx) throw new Error("useAuth must be used within AuthProvider");
-  console.log(ctx);
   return ctx;
 };

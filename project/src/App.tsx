@@ -1,6 +1,6 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-// import { ThemeProvider } from './contexts/ThemeContext';
+import { ThemeProvider } from './contexts/ThemeContext';
 import LandingPage from './pages/LandingPage';
 import MainDashboard from './pages/MainDashboard';
 import ConsultationPage from './pages/ConsultationPage';
@@ -23,7 +23,7 @@ function App() {
   return (
     <React.StrictMode>
       <BrowserRouter>
-        {/* <ThemeProvider> */}
+        <ThemeProvider>
           <AuthProvider>
             <div className="min-h-screen bg-white dark:bg-neutral-darker transition-colors duration-300">
               <Routes>
@@ -82,7 +82,7 @@ function App() {
               </Routes>
             </div>
           </AuthProvider>
-        {/* </ThemeProvider> */}
+        </ThemeProvider>
       </BrowserRouter>
     </React.StrictMode>
   );

@@ -1,8 +1,19 @@
-import React, { useState } from 'react';
-import { User, Mail, Phone, MapPin, Calendar, Edit, Save, X } from 'lucide-react';
-import Navbar from '../components/Layout/Navbar';
-import Sidebar from '../components/Layout/Sidebar';
-import Button from '../components/UI/Button';
+import React, { useState } from "react";
+import {
+  User,
+  Mail,
+  Phone,
+  MapPin,
+  Calendar,
+  Edit,
+  Save,
+  X,
+} from "lucide-react";
+import Navbar from "../components/Layout/Navbar";
+import Sidebar from "../components/Layout/Sidebar";
+import Button from "../components/UI/Button";
+import { useTranslation } from "react-i18next";
+import { useAuth } from "../contexts/AuthContext";
 
 interface UserData {
   name: string;
@@ -15,18 +26,12 @@ interface UserData {
 }
 
 const UserProfile: React.FC = () => {
+  const { user } = useAuth();
+  const { t } = useTranslation();
   const [isEditing, setIsEditing] = useState(false);
-  const [userData, setUserData] = useState<UserData>({
-    name: 'أحمد محمد علي',
-    email: 'ahmed.mohamed@email.com',
-    phone: '+20 123 456 7890',
-    location: 'القاهرة، مصر',
-    birthDate: '1985-05-15',
-    profession: 'مهندس برمجيات',
-    bio: 'مهندس برمجيات مهتم بالتكنولوجيا والقانون. أعمل في مجال تطوير التطبيقات منذ 10 سنوات.'
-  });
+  const [userData, setUserData] = useState<UserData>(user);
 
-  const [editData, setEditData] = useState<UserData>(userData);
+  const [editData, setEditData] = useState<UserData>(user);
 
   const handleEdit = () => {
     setIsEditing(true);
@@ -44,31 +49,31 @@ const UserProfile: React.FC = () => {
   };
 
   const handleChange = (field: keyof UserData, value: string) => {
-    setEditData(prev => ({ ...prev, [field]: value }));
+    setEditData((prev) => ({ ...prev, [field]: value }));
   };
 
-  const consultationStats = [
-    { label: 'إجمالي الاستشارات', value: '24', trend: '+3 هذا الشهر' },
-    { label: 'المستندات المحللة', value: '12', trend: '+2 هذا الشهر' },
-    { label: 'البحوث القانونية', value: '38', trend: '+8 هذا الشهر' },
-    { label: 'عضو منذ', value: 'يناير 2023', trend: 'سنة واحدة' }
-  ];
+const consultationStats = [
+  { label: t("profile.stats.consultations.label"), value: "24", trend: t("profile.stats.consultations.trend") },
+  { label: t("profile.stats.documents.label"), value: "12", trend: t("profile.stats.documents.trend") },
+  { label: t("profile.stats.research.label"), value: "38", trend: t("profile.stats.research.trend") },
+  { label: t("profile.stats.memberSince.label"), value: "يناير 2023", trend: t("profile.stats.memberSince.trend") }
+];
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-neutral-darker">
       <Navbar />
-      
+
       <div className="flex">
         <Sidebar />
-        
+
         <main className="flex-1 p-8">
           <div className="max-w-4xl mx-auto">
             <div className="mb-8">
               <h1 className="text-3xl font-semibold text-neutral-dark dark:text-white mb-2">
-                الملف الشخصي
+                {t("profile.title")}
               </h1>
               <p className="text-neutral-medium dark:text-neutral-light">
-                إدارة معلوماتك الشخصية وإعدادات حسابك
+                {t("profile.subtitle")}
               </p>
             </div>
 
@@ -76,10 +81,14 @@ const UserProfile: React.FC = () => {
             <div className="bg-white dark:bg-neutral-dark rounded-card shadow-sm border border-gray-200 dark:border-neutral-medium mb-8">
               <div className="p-8">
                 <div className="flex items-start space-x-6 space-x-reverse">
-                  <div className="w-24 h-24 bg-gradient-to-br from-accent-purple to-purple-600 rounded-full flex items-center justify-center text-white text-3xl font-semibold">
-                    {userData.name.split(' ').map(n => n[0]).join('').slice(0, 2)}
-                  </div>
-                  
+                  {/* <div className="w-24 h-24 bg-gradient-to-br from-accent-purple to-purple-600 rounded-full flex items-center justify-center text-white text-3xl font-semibold">
+                    {userData.name
+                      .split(" ")
+                      .map((n) => n[0])
+                      .join("")
+                      .slice(0, 2)}
+                  </div> */}
+
                   <div className="flex-1">
                     <div className="flex items-center justify-between mb-4">
                       <div>
@@ -90,7 +99,7 @@ const UserProfile: React.FC = () => {
                           {userData.profession}
                         </p>
                       </div>
-                      
+
                       <div className="flex items-center space-x-3 space-x-reverse">
                         {!isEditing ? (
                           <Button
@@ -100,7 +109,7 @@ const UserProfile: React.FC = () => {
                             className="flex items-center space-x-2 space-x-reverse"
                           >
                             <Edit className="w-4 h-4" />
-                            <span>تعديل الملف</span>
+                            <span>{t("profile.edit")}</span>
                           </Button>
                         ) : (
                           <>
@@ -110,7 +119,7 @@ const UserProfile: React.FC = () => {
                               className="flex items-center space-x-2 space-x-reverse"
                             >
                               <Save className="w-4 h-4" />
-                              <span>حفظ</span>
+                              <span>{t("profile.save")}</span>
                             </Button>
                             <Button
                               variant="outline"
@@ -119,13 +128,13 @@ const UserProfile: React.FC = () => {
                               className="flex items-center space-x-2 space-x-reverse"
                             >
                               <X className="w-4 h-4" />
-                              <span>إلغاء</span>
+                              <span>{t("profile.cancel")}</span>
                             </Button>
                           </>
                         )}
                       </div>
                     </div>
-                    
+
                     <p className="text-neutral-dark dark:text-white leading-relaxed">
                       {userData.bio}
                     </p>
@@ -139,26 +148,28 @@ const UserProfile: React.FC = () => {
               <div className="lg:col-span-2">
                 <div className="bg-white dark:bg-neutral-dark rounded-card shadow-sm border border-gray-200 dark:border-neutral-medium p-6">
                   <h3 className="text-lg font-semibold text-neutral-dark dark:text-white mb-6">
-                    المعلومات الشخصية
+                    {t("profile.info")}
                   </h3>
-                  
+
                   <div className="space-y-6">
                     {/* Name */}
                     <div>
                       <label className="block text-sm font-medium text-neutral-dark dark:text-white mb-2">
-                        الاسم الكامل
+                        {t("profile.fields.name")}
                       </label>
                       {isEditing ? (
                         <input
                           type="text"
                           value={editData.name}
-                          onChange={(e) => handleChange('name', e.target.value)}
+                          onChange={(e) => handleChange("name", e.target.value)}
                           className="w-full rounded-lg border border-gray-300 dark:border-neutral-medium bg-white dark:bg-neutral-medium px-4 py-3 text-neutral-dark dark:text-white focus:outline-none focus:ring-2 focus:ring-accent-purple"
                         />
                       ) : (
                         <div className="flex items-center space-x-3 space-x-reverse">
                           <User className="w-5 h-5 text-neutral-medium" />
-                          <span className="text-neutral-dark dark:text-white">{userData.name}</span>
+                          <span className="text-neutral-dark dark:text-white">
+                            {userData.name}
+                          </span>
                         </div>
                       )}
                     </div>
@@ -166,19 +177,23 @@ const UserProfile: React.FC = () => {
                     {/* Email */}
                     <div>
                       <label className="block text-sm font-medium text-neutral-dark dark:text-white mb-2">
-                        البريد الإلكتروني
+                        {t("profile.fields.email")}
                       </label>
                       {isEditing ? (
                         <input
                           type="email"
                           value={editData.email}
-                          onChange={(e) => handleChange('email', e.target.value)}
+                          onChange={(e) =>
+                            handleChange("email", e.target.value)
+                          }
                           className="w-full rounded-lg border border-gray-300 dark:border-neutral-medium bg-white dark:bg-neutral-medium px-4 py-3 text-neutral-dark dark:text-white focus:outline-none focus:ring-2 focus:ring-accent-purple"
                         />
                       ) : (
                         <div className="flex items-center space-x-3 space-x-reverse">
                           <Mail className="w-5 h-5 text-neutral-medium" />
-                          <span className="text-neutral-dark dark:text-white">{userData.email}</span>
+                          <span className="text-neutral-dark dark:text-white">
+                            {userData.email}
+                          </span>
                         </div>
                       )}
                     </div>
@@ -186,19 +201,23 @@ const UserProfile: React.FC = () => {
                     {/* Phone */}
                     <div>
                       <label className="block text-sm font-medium text-neutral-dark dark:text-white mb-2">
-                        رقم الهاتف
+                        {t("profile.fields.phone")}
                       </label>
                       {isEditing ? (
                         <input
                           type="tel"
                           value={editData.phone}
-                          onChange={(e) => handleChange('phone', e.target.value)}
+                          onChange={(e) =>
+                            handleChange("phone", e.target.value)
+                          }
                           className="w-full rounded-lg border border-gray-300 dark:border-neutral-medium bg-white dark:bg-neutral-medium px-4 py-3 text-neutral-dark dark:text-white focus:outline-none focus:ring-2 focus:ring-accent-purple"
                         />
                       ) : (
                         <div className="flex items-center space-x-3 space-x-reverse">
                           <Phone className="w-5 h-5 text-neutral-medium" />
-                          <span className="text-neutral-dark dark:text-white">{userData.phone}</span>
+                          <span className="text-neutral-dark dark:text-white">
+                            {userData.phone}
+                          </span>
                         </div>
                       )}
                     </div>
@@ -206,19 +225,23 @@ const UserProfile: React.FC = () => {
                     {/* Location */}
                     <div>
                       <label className="block text-sm font-medium text-neutral-dark dark:text-white mb-2">
-                        الموقع
+                        {t("profile.fields.location")}
                       </label>
                       {isEditing ? (
                         <input
                           type="text"
                           value={editData.location}
-                          onChange={(e) => handleChange('location', e.target.value)}
+                          onChange={(e) =>
+                            handleChange("location", e.target.value)
+                          }
                           className="w-full rounded-lg border border-gray-300 dark:border-neutral-medium bg-white dark:bg-neutral-medium px-4 py-3 text-neutral-dark dark:text-white focus:outline-none focus:ring-2 focus:ring-accent-purple"
                         />
                       ) : (
                         <div className="flex items-center space-x-3 space-x-reverse">
                           <MapPin className="w-5 h-5 text-neutral-medium" />
-                          <span className="text-neutral-dark dark:text-white">{userData.location}</span>
+                          <span className="text-neutral-dark dark:text-white">
+                            {userData.location}
+                          </span>
                         </div>
                       )}
                     </div>
@@ -226,20 +249,24 @@ const UserProfile: React.FC = () => {
                     {/* Birth Date */}
                     <div>
                       <label className="block text-sm font-medium text-neutral-dark dark:text-white mb-2">
-                        تاريخ الميلاد
+                        {t("profile.fields.birthDate")}
                       </label>
                       {isEditing ? (
                         <input
                           type="date"
                           value={editData.birthDate}
-                          onChange={(e) => handleChange('birthDate', e.target.value)}
+                          onChange={(e) =>
+                            handleChange("birthDate", e.target.value)
+                          }
                           className="w-full rounded-lg border border-gray-300 dark:border-neutral-medium bg-white dark:bg-neutral-medium px-4 py-3 text-neutral-dark dark:text-white focus:outline-none focus:ring-2 focus:ring-accent-purple"
                         />
                       ) : (
                         <div className="flex items-center space-x-3 space-x-reverse">
                           <Calendar className="w-5 h-5 text-neutral-medium" />
                           <span className="text-neutral-dark dark:text-white">
-                            {new Date(userData.birthDate).toLocaleDateString('ar-EG')}
+                            {new Date(userData.birthDate).toLocaleDateString(
+                              "ar-EG"
+                            )}
                           </span>
                         </div>
                       )}
@@ -248,19 +275,23 @@ const UserProfile: React.FC = () => {
                     {/* Profession */}
                     <div>
                       <label className="block text-sm font-medium text-neutral-dark dark:text-white mb-2">
-                        المهنة
+                        {t("profile.fields.profession")}
                       </label>
                       {isEditing ? (
                         <input
                           type="text"
                           value={editData.profession}
-                          onChange={(e) => handleChange('profession', e.target.value)}
+                          onChange={(e) =>
+                            handleChange("profession", e.target.value)
+                          }
                           className="w-full rounded-lg border border-gray-300 dark:border-neutral-medium bg-white dark:bg-neutral-medium px-4 py-3 text-neutral-dark dark:text-white focus:outline-none focus:ring-2 focus:ring-accent-purple"
                         />
                       ) : (
                         <div className="flex items-center space-x-3 space-x-reverse">
                           <User className="w-5 h-5 text-neutral-medium" />
-                          <span className="text-neutral-dark dark:text-white">{userData.profession}</span>
+                          <span className="text-neutral-dark dark:text-white">
+                            {userData.profession}
+                          </span>
                         </div>
                       )}
                     </div>
@@ -268,13 +299,15 @@ const UserProfile: React.FC = () => {
                     {/* Bio */}
                     <div>
                       <label className="block text-sm font-medium text-neutral-dark dark:text-white mb-2">
-                        نبذة شخصية
+                        {t("profile.fields.bio")}
                       </label>
                       {isEditing ? (
                         <textarea
                           rows={4}
                           value={editData.bio}
-                          onChange={(e) => handleChange('bio', e.target.value)}
+                          onChange={(e) =>
+                            handleChange("bio", e.target.value)
+                          }
                           className="w-full rounded-lg border border-gray-300 dark:border-neutral-medium bg-white dark:bg-neutral-medium px-4 py-3 text-neutral-dark dark:text-white focus:outline-none focus:ring-2 focus:ring-accent-purple resize-none"
                         />
                       ) : (
@@ -291,12 +324,15 @@ const UserProfile: React.FC = () => {
               <div className="space-y-6">
                 <div className="bg-white dark:bg-neutral-dark rounded-card shadow-sm border border-gray-200 dark:border-neutral-medium p-6">
                   <h3 className="text-lg font-semibold text-neutral-dark dark:text-white mb-6">
-                    إحصائيات الاستخدام
+                    {t("profile.statsTitle")}
                   </h3>
-                  
+
                   <div className="space-y-4">
                     {consultationStats.map((stat, index) => (
-                      <div key={index} className="border-b border-gray-200 dark:border-neutral-medium last:border-0 pb-3 last:pb-0">
+                      <div
+                        key={index}
+                        className="border-b border-gray-200 dark:border-neutral-medium last:border-0 pb-3 last:pb-0"
+                      >
                         <div className="flex items-center justify-between mb-1">
                           <span className="text-sm text-neutral-medium dark:text-neutral-light">
                             {stat.label}
@@ -314,12 +350,14 @@ const UserProfile: React.FC = () => {
                 </div>
 
                 <div className="bg-gradient-to-br from-green-500 to-green-600 rounded-card p-6 text-white">
-                  <h3 className="font-semibold mb-2">عضوية مميزة</h3>
+                  <h3 className="font-semibold mb-2">
+                    {t("profile.premium.title")}
+                  </h3>
                   <p className="text-green-100 text-sm mb-4">
-                    ترقى للعضوية المميزة للحصول على مزيد من المزايا
+                    {t("profile.premium.desc")}
                   </p>
                   <Button variant="secondary" size="sm" className="w-full">
-                    ترقية الحساب
+                    {t("profile.premium.upgrade")}
                   </Button>
                 </div>
               </div>
