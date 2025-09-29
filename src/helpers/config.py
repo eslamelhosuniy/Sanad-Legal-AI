@@ -1,4 +1,5 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
+from pathlib import Path
 
 
 class Settings(BaseSettings):
@@ -15,8 +16,8 @@ class Settings(BaseSettings):
     MONGODB_URL : str
 
 
-    class config():
-        env_file = '.env'
+    class Config:
+        env_file = str(Path(__file__).resolve().parent.parent / "assets" / ".env")
 
 def get_settings():
     return Settings()

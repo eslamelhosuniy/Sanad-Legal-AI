@@ -3,7 +3,12 @@ from dotenv import load_dotenv
 from motor.motor_asyncio import AsyncIOMotorClient
 from helpers.config import get_settings
 
-load_dotenv("assets/.env")
+from pathlib import Path
+import os
+BASE_DIR = Path(__file__).resolve().parent.parent  
+env_path = BASE_DIR / "assets" / ".env"
+
+load_dotenv(dotenv_path=env_path)
 
 from routes import base,data
 
