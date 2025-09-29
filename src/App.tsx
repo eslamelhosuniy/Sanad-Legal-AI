@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { HashRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import LandingPage from "./pages/LandingPage";
 import MainDashboard from "./pages/MainDashboard";
@@ -22,7 +22,7 @@ import ConsultationHistory from "./pages/ConsultationHistory";
 function App() {
   return (
     <React.StrictMode>
-      <BrowserRouter>
+      <HashRouter>
         <ThemeProvider>
           <AuthProvider>
             <div className="min-h-screen bg-white dark:bg-neutral-darker transition-colors duration-300">
@@ -30,7 +30,6 @@ function App() {
                 <Route path="/" element={<LandingPage />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/forget-password" element={<ForgetPassword />} />
-
                 <Route path="/register" element={<Register />} />
                 <Route path="/verify_email" element={<VerifyEmail />} />
                 <Route
@@ -121,7 +120,7 @@ function App() {
             </div>
           </AuthProvider>
         </ThemeProvider>
-      </BrowserRouter>
+      </HashRouter>
     </React.StrictMode>
   );
 }
