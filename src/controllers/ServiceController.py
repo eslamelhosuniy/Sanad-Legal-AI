@@ -14,6 +14,7 @@ from langchain_community.vectorstores import Chroma
 from langchain.chains.question_answering import load_qa_chain
 from langchain_core.prompts import PromptTemplate
 from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain.chains import LLMChain
 
 load_dotenv("../assets/.env")
 settings = get_settings()
@@ -104,3 +105,24 @@ def build_qa_chain(context,question):
     llm = ChatGoogleGenerativeAI(model=GEMINI_MODEL, google_api_key=GEMINI_API_KEY)
     return load_qa_chain(llm, chain_type="stuff", prompt=prompt)
 
+
+def Question_Rewriting(question: str) -> str:
+    prompt = PromptTemplate(
+        template=(
+            "You are a legal assistant specialized in Egyptian Labor Law.\n"
+            "Your task is to reformulate the user's question so that it matches the terminology and keywords "
+            "commonly used in Egyptian Labor Law articles.\n"
+            "Prefer to use exact legal terms (مثل: 'المادة', 'صاحب العمل', 'العامل', 'عقد العمل', 'الأجر', 'الفصل من العمل').\n"
+            "Do NOT answer the question.\n"
+            "Just rewrite it into a clearer and more formal legal query.\n\n"
+            "### Original Question:\n{question}\n\n"
+            "### Rewritten Question:\n"
+        ),
+        input_variables=["question"],
+    )
+
+    llm = ChatGoogleGenerativeAI(model=GEMINI_MODEL, google_api_key=GEMINI_API_KEY)
+    chain = LLMChain(llm=llm, prompt=prompt)
+
+    rewritten = chain.run(question=question)
+    return rewritten

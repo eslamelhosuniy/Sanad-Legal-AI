@@ -9,6 +9,7 @@ from .schemes.data import ProcessRequest
 import os
 from controllers.ServiceController import (
     build_qa_chain,
+    Question_Rewriting,
     load_documents,
     load_vector_db,
     create_vector_db,
@@ -115,21 +116,32 @@ async def process_endpoint(project_id: str, process_request: ProcessRequest):
     )
 
 
+
+
 @data_router.post("/query/{chat_id}")
 async def query_endpoint(chat_id: str, query_text: str = Body(...)):
-    logging.log(logging.INFO, f"{query_text}")
+    logging.log(logging.INFO, f"Original Query: {query_text}")
+
     try:
-        logging.log(logging.INFO, f" VECTOR_DB_DIR : {os.path.exists(VECTOR_DB_DIR)}")
-        # Load vector DB (lazy init)
+        # Step 1: Rewrite the question
+        question = Question_Rewriting(query_text)
+        logging.log(logging.INFO, f"Rewritten Query: {question}")
+
+        # Step 2: Load vector DB (lazy init)
         if os.path.exists(VECTOR_DB_DIR):
             vector_db = load_vector_db()
         else:
             documents = load_documents()
             vector_db = create_vector_db(documents)
-        similar_docs = vector_db.similarity_search(query_text, k=5)
-        # Run QA chain
-        qa_chain = build_qa_chain(similar_docs, query_text)
-        response = qa_chain({"input_documents": similar_docs, "question": query_text})
+
+        # Step 3: similarity search
+        similar_docs = vector_db.similarity_search(question, k=5)
+
+        # Step 4: QA chain
+        qa_chain = build_qa_chain(similar_docs, question)
+        response = qa_chain({"input_documents": similar_docs, "question": question})
+
+        # Step 5: return result
         return JSONResponse(
             status_code=status.HTTP_200_OK,
             content={
@@ -139,6 +151,7 @@ async def query_endpoint(chat_id: str, query_text: str = Body(...)):
                 "references": [doc.page_content for doc in similar_docs],
             },
         )
+
     except Exception as e:
         return JSONResponse(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -148,3 +161,46 @@ async def query_endpoint(chat_id: str, query_text: str = Body(...)):
                 "message": f"{ResponseSignal.QUERY_PROCESSING_FAILED} '{query_text}'",
             },
         )
+
+
+
+
+# @data_router.post("/query/{chat_id}")
+# async def query_endpoint(chat_id: str, query_text: str = Body(...)):
+#     logging.log(logging.INFO, f"{query_text}")
+#     q_chain = Question_Rewriting(query_text)
+#     question = q_chain({"question": query_text})
+#     qa_chain = build_qa_chain(similar_docs, question)
+    
+#     try:
+#         logging.log(logging.INFO, f" VECTOR_DB_DIR : {os.path.exists(VECTOR_DB_DIR)}")
+#         # Load vector DB (lazy init)
+#         if os.path.exists(VECTOR_DB_DIR):
+#             vector_db = load_vector_db()
+#         else:
+#             documents = load_documents()
+#             vector_db = create_vector_db(documents)
+        
+#         # Run QA chain
+#         similar_docs = vector_db.similarity_search(question, k=5)
+    
+#         response = qa_chain({"input_documents": similar_docs, "question": question})
+#         return JSONResponse(
+#             status_code=status.HTTP_200_OK,
+#             content={
+#                 "status": status.HTTP_200_OK,
+#                 "query": question,
+#                 "response": response["output_text"],
+#                 "references": [doc.page_content for doc in similar_docs],
+#             },
+#         )
+#     except Exception as e:
+#         return JSONResponse(
+#             status_code=status.HTTP_400_BAD_REQUEST,
+#             content={
+#                 "status": status.HTTP_400_BAD_REQUEST,
+#                 "error": str(e),
+#                 "message": f"{ResponseSignal.QUERY_PROCESSING_FAILED} '{query_text}'",
+#             },
+#         )
+# ---------------------
