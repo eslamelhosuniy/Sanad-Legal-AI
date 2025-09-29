@@ -46,4 +46,4 @@ Download the POSTMAN collection from [/assets/Rag-app-dev.postman_collection.jso
 
 ## API Docs
 
-- Swagger UI: http://localhost:8000/docs
+- Swagger UI: http://localhost:5000/docs
