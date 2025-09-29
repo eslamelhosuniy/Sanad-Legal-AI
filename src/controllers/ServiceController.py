@@ -180,7 +180,8 @@ def enhanced_answer_pipeline(user_question: str, vector_db, k: int = 5):
 
 def format_answer(raw_answer: str):
     """
-    Formats a raw answer string (with \n) into clean text.
+    Formats a raw answer string (with \n) into clean text or HTML.
+    mode 
     """
     import re
 
