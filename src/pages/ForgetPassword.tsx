@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Mail, Loader2, Scale, Globe } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom"; // ✅ أضف useNavigate هنا
 import { t } from "i18next";
 import ChangeLanguageButton from "../components/UI/ChangeLanguageButton";
 
@@ -9,6 +9,7 @@ export default function ForgetPassword() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [success, setSuccess] = useState<string | null>(null);
+    const navigate = useNavigate(); // ✅ هنا
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -37,7 +38,8 @@ export default function ForgetPassword() {
                 throw new Error(message);
             }
 
-            setSuccess("تم إرسال رابط إعادة تعيين كلمة المرور إلى بريدك الإلكتروني.");
+            navigate("/waiting_verify_email");
+
         } catch (err: any) {
             setError(err.message || "حدث خطأ ما");
         } finally {
