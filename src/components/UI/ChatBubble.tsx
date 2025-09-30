@@ -27,7 +27,7 @@ const ChatBubble: React.FC<ChatBubbleProps> = ({
   }
   return (
     <div className={`flex ${isUser ? "justify-end" : "justify-start"} mb-6`}>
-      <div className={`max-w-3xl ${isUser ? "ml-12" : "mr-12"}`}>
+      <div className={`max-w-3xl ${isUser ? "ml-0" : "mr-0"}`}>
         <div
           className={`px-6 py-2 rounded-chat ${
             isUser
