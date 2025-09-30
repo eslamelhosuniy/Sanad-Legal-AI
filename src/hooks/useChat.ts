@@ -76,6 +76,8 @@ export const useChat = (initialConversationId?: number) => {
       throw new Error("Failed to send message");
     }
 
+    console.log("Message sent successfully");
+
     return res.json();
   };
 
@@ -166,17 +168,19 @@ export const useChat = (initialConversationId?: number) => {
       }
 
       const response = await sendMessageApi(userMessage.content, convId);
+      console.log("🔹 Response:", response);
+      console.log(response.aiMessage.content);
 
       const aiMessage: Message = {
-        id: response.id?.toString() || crypto.randomUUID(),
-        content: response.content || "",
+        id: response.aiMessage.id?.toString() || crypto.randomUUID(),
+        content: response.aiMessage.content || "",
         isUser: false,
         timestamp: new Date().toLocaleTimeString("ar-EG", {
           hour: "2-digit",
           minute: "2-digit",
         }),
-        sources: response.sources || [],
-        role: response.role || "assistant",
+        sources: response.aiMessage.sources || [],
+        role: response.aiMessage.role || "AI",
       };
 
       setMessages((prev) => [...prev, aiMessage]);
