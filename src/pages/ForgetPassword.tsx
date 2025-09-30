@@ -23,7 +23,7 @@ export default function ForgetPassword() {
                 {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ email }),
+                    body: JSON.stringify({ Email:email }),
                 }
             );
 
