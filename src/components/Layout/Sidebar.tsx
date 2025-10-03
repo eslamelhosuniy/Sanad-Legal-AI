@@ -1,4 +1,4 @@
-import  { useState } from "react";
+import { useState } from "react";
 import {
   User,
   MessageSquare,
@@ -18,34 +18,34 @@ function Sidebar() {
   const location = useLocation();
   const [isOpen, setIsOpen] = useState(false);
   const [pop, setPop] = useState(false);
-  const { user } = useAuth();
+  const { deleteUser, user } = useAuth();
   function togglePop() {
     setPop(!pop);
   }
 
-  const deleteUser = async (id?: string) => {
-    try {
-      const response = await fetch(
-        `https://sanad-backend-production-cbbc.up.railway.app/api/User/${id}`,
-        {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-            // لو عندك JWT Token لازم تضيفه هنا 👇
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
+  // const deleteUser = async (id?: string) => {
+  //   try {
+  //     const response = await fetch(
+  //       `https://sanad-backend-production-cbbc.up.railway.app/api/User/${id}`,
+  //       {
+  //         method: "DELETE",
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //           // لو عندك JWT Token لازم تضيفه هنا 👇
+  //           Authorization: `Bearer ${localStorage.getItem("token")}`,
+  //         },
+  //       }
+  //     );
 
-      if (!response.ok) {
-        throw new Error("Failed to delete user");
-      }
+  //     if (!response.ok) {
+  //       throw new Error("Failed to delete user");
+  //     }
 
-      console.log("User deleted successfully");
-    } catch (error) {
-      console.error("Error:", error);
-    }
-  };
+  //     console.log("User deleted successfully");
+  //   } catch (error) {
+  //     console.error("Error:", error);
+  //   }
+  // };
 
   const sidebarItems = [
     {
@@ -69,12 +69,10 @@ function Sidebar() {
     },
     {
       section: t("sidebar.settings"),
-      items: [
-   
-        { path: "/privacy", icon: Shield, label: t("sidebar.privacy") },
-      ],
+      items: [{ path: "/privacy", icon: Shield, label: t("sidebar.privacy") }],
     },
   ];
+  // console.log(user?.id);
 
   return (
     <>
@@ -125,12 +123,9 @@ function Sidebar() {
               </div>
               <div>
                 <h3 className="font-semibold text-white">{user?.name}</h3>
-                <p className="text-white/80 text-sm">
-                  {t("sidebar.user-role")}
-                </p>
+                <p className="text-white/80 text-sm">{user?.role}</p>
               </div>
             </div>
-         
           </div>
 
           <nav className="space-y-6">
@@ -184,19 +179,19 @@ function Sidebar() {
           </div>
         </div>
       </aside>
-        {pop && (
-          <PopUp onClose={togglePop}>
-            <p className="text-red-600 dark:text-red-400 text-lg mb-3">
-              {t("sidebar.delete-section.delete-par")}
-            </p>
-            <button
-              onClick={() => deleteUser(user?.id)}
-              className=" bg-red-600 p-2 hover:bg-red-700 text-white text-sm font-medium py-2 rounded-lg transition-colors"
-            >
-              {t("sidebar.delete-section.delete-immediatly")}
-            </button>
-          </PopUp>
-        )}
+      {pop && (
+        <PopUp onClose={togglePop}>
+          <p className="text-red-600 dark:text-red-400 text-lg mb-3">
+            {t("sidebar.delete-section.delete-par")}
+          </p>
+          <button
+            onClick={() => deleteUser(user?.id)}
+            className=" bg-red-600 p-2 hover:bg-red-700 text-white text-sm font-medium py-2 rounded-lg transition-colors"
+          >
+            {t("sidebar.delete-section.delete-immediatly")}
+          </button>
+        </PopUp>
+      )}
     </>
   );
 }

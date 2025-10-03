@@ -118,7 +118,7 @@ i18n.use(initReactI18next).init({
           },
           actions: {
             startConsultation: "ابدأ الاستشارة",
-            lawyerLogin: "تسجيل دخول المحامي",
+            lawyerLogin: "تسجيل الدخول كزائر",
           },
           featuresSection: {
             title: "لماذا تختار منصتنا؟",
@@ -544,7 +544,7 @@ i18n.use(initReactI18next).init({
           },
           actions: {
             startConsultation: "Start Consultation",
-            lawyerLogin: "Lawyer Login",
+            lawyerLogin: "Login as Guest",
           },
           featuresSection: {
             title: "Why Choose Our Platform?",

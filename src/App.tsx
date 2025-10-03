@@ -39,7 +39,9 @@ function App() {
                 <Route
                   path="/reset_password"
                   element={
+                  
                       <ResetPassword />
+                
                   }
                 />
                 <Route

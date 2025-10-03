@@ -8,7 +8,8 @@ import { useAuth } from "../contexts/AuthContext";
 
 const LandingPage: React.FC = () => {
   const { t } = useTranslation();
-  const { user } = useAuth();
+  const { user, loginAsGuest , logout} = useAuth();
+  console.log(user);
 
   const features = [
     {
@@ -57,6 +58,9 @@ const LandingPage: React.FC = () => {
                 {t("landingPage.login")}
               </Link>
             )}
+            {user && (
+              <button onClick={logout}>{t("landingPage.logout")}</button>
+            )}
             <ChangeLanguageButton />
           </div>
         </div>
@@ -75,19 +79,25 @@ const LandingPage: React.FC = () => {
           {t("landingPage.hero.subtitle")}
         </p>
 
-        <div className="flex flex-col md:flex-row justify-center gap-4 mb-16">
+        <div className="flex  justify-center gap-4 mb-16">
           <Link to="/consultation">
             <Button size="lg" className="flex">
-              {t("landingPage.actions.startConsultation")}{" "}
+              {t("landingPage.actions.startConsultation")}
               <ArrowLeft className="w-5 h-5 ltr:rotate-180 mx-2" />
             </Button>
           </Link>
-          <Link to="/lawyers">
-            <Button variant="secondary" size="lg" className="flex">
-              {t("landingPage.actions.lawyerLogin")}{" "}
+
+          {!user && (
+            <Button
+              onClick={loginAsGuest}
+              variant="secondary"
+              size="lg"
+              className="flex"
+            >
+              {t("landingPage.actions.lawyerLogin")}
               <Users className="w-5 h-5 mx-2" />
             </Button>
-          </Link>
+          )}
         </div>
       </section>
 

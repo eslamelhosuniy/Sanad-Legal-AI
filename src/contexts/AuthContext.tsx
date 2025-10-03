@@ -16,6 +16,8 @@ type AuthContextType = {
   logout: () => void;
   updateUser: (updated: Partial<User>) => void; // ✅ نضيف updateUser
   addConversation: (conv: any) => void; // ✅ نضيف addConversation
+  loginAsGuest: () => Promise<void>;
+  deleteUser: (id?: string) => Promise<void>;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -67,15 +69,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       data = { raw: text };
     }
 
-    console.log("status:", res.status);
-    console.log("response:", data);
+
 
     if (!res.ok) {
       if (data?.raw) {
         throw new Error(data.raw);
       }
       if (data?.errors) {
-        // ناخد أول error ونرميه
+      
         const messages = Object.values(data.errors).flat();
         throw new Error(messages.join(" | "));
       }
@@ -109,8 +110,50 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     localStorage.setItem("user", JSON.stringify(userObj));
     navigate("/dashboard", { replace: true });
   };
+  const loginAsGuest = async () => {
+    const res = await fetch(`${API_BASE}/Auth/register-guest`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+    });
 
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data?.message || "Guest login failed");
+
+    const userObj: User = {
+      id: data.userId,
+      name: data.name,
+      email: "",
+      role: data.role,
+      conversations: [],
+    };
+
+    setUser(userObj);
+    localStorage.setItem("user", JSON.stringify(userObj));
+    navigate("/dashboard", { replace: true });
+  };
+
+  const deleteUser = async (id?: string) => {
+    try {
+      const response = await fetch(`${API_BASE}/Users/${id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`, // لو فيه توكن
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to delete user");
+      }
+
+      console.log("User deleted successfully");
+      navigate("/", { replace: true });
+    } catch (error) {
+      console.error("Error deleting user:", error);
+    }
+  };
   const logout = () => {
+    if (user?.role === "Guest") deleteUser(user?.id);
     setUser(null);
     localStorage.removeItem("user");
     navigate("/", { replace: true });
@@ -135,7 +178,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   return (
     <AuthContext.Provider
-      value={{ user, login, register, logout, updateUser, addConversation }}
+      value={{
+        user,
+        login,
+        register,
+        logout,
+        updateUser,
+        addConversation,
+        loginAsGuest,
+        deleteUser,
+      }}
     >
       {children}
     </AuthContext.Provider>

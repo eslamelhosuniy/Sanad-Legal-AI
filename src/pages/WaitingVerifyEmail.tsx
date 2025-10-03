@@ -30,8 +30,11 @@ export default function WaitingVerifyEmail() {
           <h5 className="text-lg font-medium mb-4">
             {t("waitingVerifyEmail.subtitle")}
           </h5>
-          <p className="text-gray-700 mb-6">
+          <p className="text-gray-700 mb-4">
             {t("waitingVerifyEmail.description")}
+          </p>
+          <p className="bg-red-500/20 text-red-300 px-3 py-2 mb-6 rounded-md text-sm text-center">
+            Don't forget to check your spam folder
           </p>
 
           <Link

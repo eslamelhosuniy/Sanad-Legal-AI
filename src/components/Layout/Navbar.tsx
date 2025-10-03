@@ -57,7 +57,7 @@ function MainNavbar() {
               return (
                 <Link
                   key={item.path}
-                  to={ item.soon ? "#" : item.path}
+                  to={item.soon ? "#" : item.path}
                   onClick={item.soon ? togglePop : null}
                   className={`flex items-center mx-2 px-2 py-2 rounded-lg transition-colors ${
                     isActive

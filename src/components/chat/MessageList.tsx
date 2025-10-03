@@ -9,7 +9,7 @@ interface Props {
 }
 
 export default function MessagesList({ messages, isLoading }: Props) {
-  console.log(messages);
+  // console.log(messages);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {

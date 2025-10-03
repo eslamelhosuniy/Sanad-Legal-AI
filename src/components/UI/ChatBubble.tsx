@@ -3,13 +3,14 @@ import { ExternalLink, UserCheck } from "lucide-react";
 
 import { useTranslation } from "react-i18next";
 import PopUp from "./PopUp";
+import { useNavigate } from "react-router-dom";
 
 interface ChatBubbleProps {
   message: string;
   isUser: boolean;
   timestamp?: string;
   showActions?: boolean;
-  sources?: string[];
+  sources?: string;
 }
 
 const ChatBubble: React.FC<ChatBubbleProps> = ({
@@ -20,7 +21,12 @@ const ChatBubble: React.FC<ChatBubbleProps> = ({
   sources,
 }) => {
   const [pop, setPop] = useState(false);
+  const [openItems, setOpenItems] = useState<{ [key: number]: boolean }>({});
+
+  const navigate = useNavigate();
+
   const { t } = useTranslation();
+  // console.log(sources);
 
   function togglePop() {
     setPop(!pop);
@@ -48,45 +54,95 @@ const ChatBubble: React.FC<ChatBubbleProps> = ({
             </p>
           )}
         </div>
-
-        {sources && sources.length > 0 && (
-          <div className="mt-3 flex flex-wrap gap-2">
-            {sources.map((source, index) => (
-              <button
-                key={index}
-                className="flex items-center space-x-1 space-x-reverse bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 px-3 py-1 rounded-full text-sm hover:bg-blue-100 dark:hover:bg-blue-900/50 transition-colors"
-              >
-                <ExternalLink className="w-3 h-3" />
-                <span>{source}</span>
-              </button>
-            ))}
-          </div>
-        )}
-
         {showActions && !isUser && (
           <div className="mt-4 flex space-x-3 space-x-reverse">
-            <button className="flex relative items-center mx-2 space-x-2 space-x-reverse bg-white dark:bg-neutral-dark text-accent-purple px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-50 dark:hover:bg-neutral-medium transition-colors shadow-md">
-              <ExternalLink className="w-4 h-4" />
-              <span>{t("chat.check_resource")}</span>
-              <span className="absolute -top-4 -right-7 bg-danger text-white text-[13px] font-bold px-3 py-1 rounded-full transform rotate-12 shadow">
-                {t("lawyers.lawyerCard.actions.soon")}
-              </span>
-            </button>
             <button
               onClick={togglePop}
+              className="flex relative items-center mx-2 space-x-2 space-x-reverse bg-white dark:bg-neutral-dark text-accent-purple px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-50 dark:hover:bg-neutral-medium transition-colors shadow-md"
+            >
+              <ExternalLink className="w-4 h-4" />
+              <span>{t("chat.check_resource")}</span>
+            </button>
+            <button
+              onClick={() => navigate("/lawyers")}
               className="flex relative items-center mx-3 space-x-2 space-x-reverse bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-md"
             >
               <UserCheck className="w-4 h-4" />
               <span>{t("chat.contact_lawyer")}</span>
-              <span className="absolute -top-4 -right-7 bg-danger text-white text-[13px] font-bold px-3 py-1 rounded-full transform rotate-12 shadow">
-                {t("lawyers.lawyerCard.actions.soon")}
-              </span>
             </button>
           </div>
         )}
-        {pop && (
+
+        {pop && sources && (
           <PopUp onClose={togglePop}>
-            <p>{t("soon")}</p>
+            <div className="max-h-[600px] overflow-y-auto space-y-6 p-4 leading-relaxed">
+              {sources
+                ?.split(/(?=مادة\s*\([^)]+\))/)
+                .map((item: string, i: number) => {
+                  const match = item.match(/^(مادة\s*\([^)]+\)\s*:?)/);
+                  const title = match ? match[0] : `مادة ${i + 1}`;
+                  const content = item
+                    .replace(/^(مادة\s*\([^)]+\)\s*:?)/, "")
+                    .trim();
+
+                  const parts = content
+                    .split(/\s*(\d+|[٠-٩]+)[-–.]\s+/)
+                    .filter(
+                      (p) => p && !/^\d+$/.test(p) && !/^[٠-٩]+$/.test(p)
+                    );
+
+                  const intro = parts.length > 0 ? parts[0] : "";
+                  const points = parts.slice(1);
+
+                  const isOpen = openItems[i] || false;
+
+                  return (
+                    <div
+                      key={i}
+                      className="p-4 rounded-lg bg-gray-50 dark:bg-neutral-medium text-gray-900 dark:text-gray-200 shadow-sm"
+                    >
+                      {/* عنوان المادة */}
+                      <h3 className="font-bold text-accent-purple mb-3 text-lg">
+                        {title}
+                      </h3>
+
+                      {/* المقدمة */}
+                      {intro && (
+                        <p className="mb-3 font-medium text-gray-700 dark:text-gray-300">
+                          {intro}
+                        </p>
+                      )}
+
+                      {/* باقي النقط (مخفية في البداية) */}
+                      {isOpen && points.length > 0 && (
+                        <ul className="space-y-2 pl-4">
+                          {points.map((p, idx) => (
+                            <li key={idx} className="flex">
+                              <span className="ml-2 font-bold">{idx + 1}-</span>
+                              <span>{p.trim()}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+
+                      {/* زرار اقرأ المزيد */}
+                      {points.length > 0 && (
+                        <button
+                          onClick={() =>
+                            setOpenItems((prev) => ({
+                              ...prev,
+                              [i]: !isOpen,
+                            }))
+                          }
+                          className="mt-2 text-sm text-accent-purple font-semibold hover:underline"
+                        >
+                          {isOpen ? "إخفاء التفاصيل" : "اقرأ المزيد"}
+                        </button>
+                      )}
+                    </div>
+                  );
+                })}
+            </div>
           </PopUp>
         )}
       </div>

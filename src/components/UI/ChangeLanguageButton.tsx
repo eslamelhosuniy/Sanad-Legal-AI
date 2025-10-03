@@ -1,7 +1,13 @@
 import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 
-function ChangeLanguageButton() {
+interface ChangeLanguageButtonProps {
+  color?: string;
+}
+
+function ChangeLanguageButton({
+  color = "bg-purple-600 text-white",
+}: ChangeLanguageButtonProps) {
   const { i18n } = useTranslation();
 
   function changeLanguage() {
@@ -26,8 +32,8 @@ function ChangeLanguageButton() {
 
   return (
     <button
-      className="mX-3 px-3 py-1 rounded border"
-      onClick={() => changeLanguage()}
+      className={`mx-3 px-3 py-1 rounded border ${color}`}
+      onClick={changeLanguage}
     >
       {i18n.language === "ar" ? "English" : "العربية"}
     </button>
